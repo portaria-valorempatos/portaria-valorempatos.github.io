@@ -216,6 +216,19 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmação de Saída Admin -->
+    <div id="modal-sair-admin" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200 text-center">
+            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">⚠️</div>
+            <h3 class="text-lg font-bold text-slate-800">Sair do Modo Admin</h3>
+            <p class="text-xs text-slate-500">Deseja realmente sair do modo Administrador?</p>
+            <div class="flex space-x-3 pt-2">
+                <button onclick="fecharModalSair()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">Cancelar</button>
+                <button onclick="confirmarSaidaAdmin()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-xl text-sm transition">Sair</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Rodapé -->
     <footer class="text-center py-4 text-xs text-slate-400">
         Valorem Agronegócios &copy; 2026 - Todos os direitos reservados.
@@ -242,7 +255,7 @@
         let registrosCache = [];
         let mostrarAntigos = false;
         let isAdmin = false;
-        const SENHA_MESTRE = "valorem2026"; // Senha padrão para administradores
+        const SENHA_MESTRE = "valorem2026";
 
         try {
             firebase.initializeApp(firebaseConfig);
@@ -281,13 +294,8 @@
 
         function solicitarSenhaAdmin() {
             if (isAdmin) {
-                if (confirm("Deseja sair do modo Administrador?")) {
-                    isAdmin = false;
-                    document.getElementById('btn-admin-status').innerText = "🔒 Modo Admin";
-                    document.getElementById('btn-admin-status').className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-300";
-                    renderizarTabela();
-                    mostrarToast("Modo Admin encerrado.");
-                }
+                document.getElementById('modal-sair-admin').classList.remove('hidden');
+                document.getElementById('modal-sair-admin').classList.add('flex');
                 return;
             }
             document.getElementById('modal-admin').classList.remove('hidden');
@@ -299,6 +307,20 @@
         function fecharModalAdmin() {
             document.getElementById('modal-admin').classList.remove('flex');
             document.getElementById('modal-admin').classList.add('hidden');
+        }
+
+        function fecharModalSair() {
+            document.getElementById('modal-sair-admin').classList.remove('flex');
+            document.getElementById('modal-sair-admin').classList.add('hidden');
+        }
+
+        function confirmarSaidaAdmin() {
+            isAdmin = false;
+            fecharModalSair();
+            document.getElementById('btn-admin-status').innerText = "🔒 Modo Admin";
+            document.getElementById('btn-admin-status').className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-300";
+            renderizarTabela();
+            mostrarToast("Modo Admin encerrado.");
         }
 
         function verificarSenhaAdmin() {
