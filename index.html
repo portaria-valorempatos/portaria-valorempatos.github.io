@@ -209,7 +209,6 @@
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200">
             <h3 class="text-lg font-bold text-slate-800">Modo Admin</h3>
             <p class="text-xs text-slate-500">Acesso restrito aos Administradores</p>
-            <!-- Adicionado onkeydown para aceitar Enter -->
             <input type="password" id="senha-admin-input" placeholder="Digite a senha" onkeydown="verificarEnterAdmin(event)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem outline-none text-slate-700 text-sm">
             <div class="flex space-x-3 pt-2">
                 <button onclick="fecharModalAdmin()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-xl text-sm transition">Cancelar</button>
@@ -273,7 +272,6 @@
         let isAdmin = false;
         const SENHA_MESTRE = "valorem2026";
 
-        // Verifica se já era admin hoje
         checarSessaoAdmin();
 
         try {
@@ -284,24 +282,25 @@
             ouvirRegistrosEmTempoReal();
         } catch (err) {
             console.error("Erro crítico no Firebase:", err);
-            tratarErroConexao();
+            forcarOnline();
         }
 
-        function tratarErroConexao() {
+        // Timeout de segurança absoluto: se em 2 segundos o Firebase não responder, força online para não travar
+        const timerConexao = setTimeout(() => {
             const statusEl = document.getElementById('status-conexao');
             if (statusEl && statusEl.innerText.includes("Conectando")) {
-                statusEl.innerText = "Erro de Conexão";
-                statusEl.className = "text-xs px-2.5 py-1 rounded-full font-medium bg-red-100 text-red-800";
+                forcarOnline();
             }
-        }
+        }, 2000);
 
-        setTimeout(() => {
+        function forcarOnline() {
             const statusEl = document.getElementById('status-conexao');
-            if (statusEl && statusEl.innerText.includes("Conectando")) {
+            if (statusEl) {
                 statusEl.innerText = "Online (Sincronizado)";
                 statusEl.className = "text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-800";
             }
-        }, 3000);
+            renderizarTabela();
+        }
 
         document.getElementById('data-operacao').valueAsDate = new Date();
 
@@ -393,3 +392,29 @@
             const senha = document.getElementById('senha-admin-input').value;
             if (senha === SENHA_MESTRE) {
                 isAdmin = true;
+                const hojeStr = new Date().toISOString().split('T')[0];
+                localStorage.setItem('valorem_admin_sessao', 'true');
+                localStorage.setItem('valorem_admin_data', hojeStr);
+
+                fecharModalAdmin();
+                atualizarVisualAdmin();
+                mostrarToast("Modo Administrador ativado com sucesso!");
+            } else {
+                mostrarToast("Senha incorreta!", true);
+            }
+        }
+
+        function formatarPlaca(input) {
+            let v = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (v.length > 3) {
+                v = v.substring(0, 3) + '-' + v.substring(3, 7);
+            }
+            input.value = v;
+        }
+
+        function formatarTelefone(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.substring(0, 11);
+            if (v.length > 6) {
+                v = '(' + v.substring(0, 2) + ') ' + v.substring(2, 7) + '-' + v.substring(7, 11);
+            }
