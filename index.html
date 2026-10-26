@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valorem - Agendamento Portaria</title>
     
-    <!-- Favicon adicionado conforme solicitado -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="valorem-simbolo-verde-transparente.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +15,7 @@
                 extend: {
                     colors: {
                         valorem: {
-                            DEFAULT: '#00732E', // Cor principal definida
+                            DEFAULT: '#00732E',
                             light: '#00943c',
                             dark: '#005421'
                         }
@@ -54,19 +54,23 @@
         .toast {
             background-color: #00732E;
             color: white;
-            padding: 12px 24px;
+            padding: 16px 24px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             transition: opacity 0.5s ease-in-out;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            font-weight: 500;
+        }
+        .toast.error {
+            background-color: #ef4444; /* Vermelho para erro */
         }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- Cabeçalho com Logo -->
+    <!-- Cabeçalho -->
     <header class="bg-white shadow-sm border-b-4 border-valorem">
         <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-center sm:justify-start items-center">
             <img src="valorem-logotipo-horizontal-verde-com-slogan-transparente.png" alt="Valorem" class="h-12 mx-auto sm:mx-0 object-contain">
@@ -75,7 +79,7 @@
 
     <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         
-        <!-- Navegação de Abas -->
+        <!-- Abas -->
         <div class="flex justify-center mb-8">
             <div class="inline-flex bg-gray-200 rounded-lg p-1 shadow-inner">
                 <button id="tab-btn-registrar" class="tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow" onclick="switchTab('registrar')">
@@ -87,7 +91,7 @@
             </div>
         </div>
 
-        <!-- Seção: Registrar (Portaria) -->
+        <!-- ABA: Registrar -->
         <section id="view-registrar" class="tab-content max-w-xl mx-auto">
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="px-6 py-4 bg-valorem text-white border-b border-gray-200">
@@ -96,11 +100,10 @@
                 </div>
                 
                 <form id="agendamento-form" class="p-6 space-y-5">
-                    <!-- Operação e Data da Operação -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                             <label for="operacao" class="block text-sm font-medium text-gray-700 mb-1">Operação *</label>
-                            <select id="operacao" name="operacao" required class="w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                            <select id="operacao" required class="w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
                                 <option value="" disabled selected>Selecione a operação</option>
                                 <option value="Carregamento">Carregamento</option>
                                 <option value="Descarga">Descarga</option>
@@ -109,15 +112,14 @@
                         </div>
                         <div>
                             <label for="data_operacao" class="block text-sm font-medium text-gray-700 mb-1">Data da Operação *</label>
-                            <input type="date" id="data_operacao" name="data_operacao" required class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                            <input type="date" id="data_operacao" required class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
                         </div>
                     </div>
 
-                    <!-- Nome do Motorista e Transportadora -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                             <label for="motorista" class="block text-sm font-medium text-gray-700 mb-1">Nome do Motorista *</label>
-                            <input type="text" id="motorista" name="motorista" list="motoristas-list" required placeholder="Digite ou selecione o nome" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                            <input type="text" id="motorista" list="motoristas-list" required placeholder="Digite ou selecione" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase">
                             <datalist id="motoristas-list">
                                 <option value="ANGELO CESAR DE MAGALHÃES"></option>
                                 <option value="CLAUDIO APARECIDO DE ARAUJO"></option>
@@ -150,33 +152,27 @@
                         </div>
                         <div>
                             <label for="transportadora" class="block text-sm font-medium text-gray-700 mb-1">Transportadora *</label>
-                            <input type="text" id="transportadora" name="transportadora" required placeholder="Ex: G10 TRANSPORTES" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                            <input type="text" id="transportadora" required placeholder="Ex: G10 TRANSPORTES" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase">
                         </div>
                     </div>
 
-                    <!-- Placas e Telefone -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                         <div>
                             <label for="placa_cavalo" class="block text-sm font-medium text-gray-700 mb-1">Placa Cavalo *</label>
-                            <!-- Máximo de 8 caracteres contando o hífen (Ex: ABC-1234) -->
-                            <input type="text" id="placa_cavalo" name="placa_cavalo" required placeholder="Ex: ABC-1234" maxlength="8" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase font-mono">
+                            <input type="text" id="placa_cavalo" required placeholder="ABC-1234" maxlength="8" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase font-mono">
                         </div>
                         <div>
                             <label for="placa_carreta" class="block text-sm font-medium text-gray-700 mb-1">Placa Carreta</label>
-                            <input type="text" id="placa_carreta" name="placa_carreta" placeholder="Ex: ABC-1234" maxlength="8" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase font-mono">
+                            <input type="text" id="placa_carreta" placeholder="ABC-1234" maxlength="8" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase font-mono">
                         </div>
                         <div>
                             <label for="telefone" class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
-                            <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" maxlength="15" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                            <input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX" maxlength="15" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
                         </div>
                     </div>
 
-                    <!-- Status de Autenticação/Carregamento -->
-                    <div id="auth-status" class="text-sm text-gray-500 italic hidden">Conectando ao sistema...</div>
-
-                    <!-- Botão de Envio -->
                     <div class="pt-2">
-                        <button type="submit" id="btn-submit" disabled class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-valorem hover:bg-valorem-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-valorem disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <button type="submit" id="btn-submit" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-valorem hover:bg-valorem-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-valorem disabled:opacity-50 transition-colors">
                             Registrar Entrada
                         </button>
                     </div>
@@ -184,13 +180,11 @@
             </div>
         </section>
 
-        <!-- Seção: Consultas (Público) -->
+        <!-- ABA: Consultas -->
         <section id="view-consultas" class="tab-content hidden-view">
-            
-            <!-- Botão para alternar visualização de dias anteriores -->
             <div class="mb-4 flex justify-end">
                 <button id="btn-toggle-past" class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none bg-gray-200 text-gray-700 hover:bg-gray-300 flex items-center shadow-sm">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Mostrar dias anteriores
                 </button>
             </div>
@@ -198,12 +192,12 @@
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
                     <h2 class="text-lg font-semibold text-gray-800">Registros Recentes</h2>
-                    <div class="text-sm text-gray-500 flex items-center">
+                    <div class="text-sm text-gray-500 flex items-center" id="status-sincronizacao">
                         <span class="relative flex h-3 w-3 mr-2">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-3 w-3 bg-valorem"></span>
                         </span>
-                        Sincronizado ao vivo
+                        Conectando...
                     </div>
                 </div>
                 
@@ -211,25 +205,20 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-100">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Registro</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Operação</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operação</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Motorista</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transportadora</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa Cavalo</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa Carreta</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefone</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registro (Data/Hora)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Operação</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operação</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Motorista</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transportadora</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa Cavalo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa Carreta</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefone</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-corpo" class="bg-white divide-y divide-gray-200">
-                            <!-- Linhas inseridas via JS -->
                             <tr>
                                 <td colspan="8" class="px-6 py-10 text-center text-gray-500">
-                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-valorem inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Carregando dados...
+                                    Aguardando conexão com o banco de dados...
                                 </td>
                             </tr>
                         </tbody>
@@ -240,114 +229,56 @@
                 </div>
             </div>
         </section>
-
     </main>
 
-    <!-- Container para Toasts -->
     <div id="toast-container"></div>
 
-    <!-- 
-    ========================================================================
-    LÓGICA DA APLICAÇÃO E INTEGRAÇÃO FIREBASE 
-    ========================================================================
-    Aviso para implementação no seu ambiente pessoal: 
-    Este código utiliza a estrutura padrão de persistência. Se estiver 
-    configurando seu próprio Firebase fora deste ambiente, certifique-se
-    de inicializá-lo corretamente com suas credenciais de acesso ao Firestore.
-    -->
+    <!-- FIREBASE SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Variáveis de ambiente fornecidas pela plataforma
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'valorem-portaria-demo';
-        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
-        let firebaseConfig = {};
+        // ==============================================================================
+        // ⚠️ ATENÇÃO: CONFIGURAÇÃO DO FIREBASE NECESSÁRIA! ⚠️
+        // ==============================================================================
+        // Para que o banco de dados grave de verdade no seu GitHub Pages, você PRECISA:
+        // 1. Ir em https://console.firebase.google.com/
+        // 2. Criar um projeto e adicionar um aplicativo Web (</>)
+        // 3. Criar um banco de dados "Firestore Database" (iniciar em modo de teste)
+        // 4. Copiar as chaves geradas e colar exatamente aqui abaixo:
+        // ==============================================================================
         
-        if (firebaseConfigStr) {
-            try { firebaseConfig = JSON.parse(firebaseConfigStr); } 
-            catch (e) { console.error("Erro ao parsear firebase config", e); }
-        } else {
-             console.warn("Configuração do Firebase não encontrada. Dados serão apenas locais.");
-        }
+        const firebaseConfig = {
+            apiKey: "COLE_SUA_API_KEY_AQUI",
+            authDomain: "COLE_SEU_AUTH_DOMAIN_AQUI",
+            projectId: "COLE_SEU_PROJECT_ID_AQUI",
+            storageBucket: "COLE_SEU_STORAGE_BUCKET_AQUI",
+            messagingSenderId: "COLE_SEU_MESSAGING_SENDER_ID_AQUI",
+            appId: "COLE_SEU_APP_ID_AQUI"
+        };
+        // ==============================================================================
 
-        let app, db, auth;
-        let currentUser = null;
-        let isFirebaseInitialized = false;
-
-        // Estado local para armazenar dados e controlar exibição de dias anteriores
+        let app, db;
         let todosRegistros = [];
         let mostrarDiasAnteriores = false;
 
-        try {
-            if(Object.keys(firebaseConfig).length > 0) {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                isFirebaseInitialized = true;
-            }
-        } catch (error) {
-            console.error("Erro ao inicializar Firebase:", error);
-        }
-
         const form = document.getElementById('agendamento-form');
         const btnSubmit = document.getElementById('btn-submit');
-        const authStatus = document.getElementById('auth-status');
         const tabelaCorpo = document.getElementById('tabela-corpo');
         const emptyState = document.getElementById('empty-state');
         const btnTogglePast = document.getElementById('btn-toggle-past');
+        const statusSincronizacao = document.getElementById('status-sincronizacao');
 
-        // Alternância entre abas
-        window.switchTab = function(tabName) {
-            const viewRegistrar = document.getElementById('view-registrar');
-            const viewConsultas = document.getElementById('view-consultas');
-            const btnRegistrar = document.getElementById('tab-btn-registrar');
-            const btnConsultas = document.getElementById('tab-btn-consultas');
-
-            if (tabName === 'registrar') {
-                viewRegistrar.classList.remove('hidden-view');
-                viewConsultas.classList.add('hidden-view');
-                btnRegistrar.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
-                btnConsultas.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
-            } else {
-                viewRegistrar.classList.add('hidden-view');
-                viewConsultas.classList.remove('hidden-view');
-                btnConsultas.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
-                btnRegistrar.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
-            }
-        };
-
-        // Lógica do botão de alternância de dias anteriores
-        btnTogglePast.addEventListener('click', () => {
-            mostrarDiasAnteriores = !mostrarDiasAnteriores;
-            
-            // Alterar estilo do botão para mostrar se está ativo ou não
-            if (mostrarDiasAnteriores) {
-                btnTogglePast.innerHTML = '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg> Ocultar dias anteriores';
-                btnTogglePast.classList.replace('bg-gray-200', 'bg-valorem');
-                btnTogglePast.classList.replace('text-gray-700', 'text-white');
-                btnTogglePast.classList.replace('hover:bg-gray-300', 'hover:bg-valorem-dark');
-            } else {
-                btnTogglePast.innerHTML = '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Mostrar dias anteriores';
-                btnTogglePast.classList.replace('bg-valorem', 'bg-gray-200');
-                btnTogglePast.classList.replace('text-white', 'text-gray-700');
-                btnTogglePast.classList.replace('hover:bg-valorem-dark', 'hover:bg-gray-300');
-            }
-
-            // Re-renderizar tabela com a nova configuração de filtro
-            renderTable(todosRegistros);
-        });
-
+        // Função para substituir o alert nativo por uma notificação mais amigável
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
             const icon = type === 'success' 
-                ? `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
-                : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                ? `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
+                : `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
                 
-            toast.className = `toast ${type === 'error' ? 'bg-red-500' : 'bg-valorem'}`;
+            toast.className = `toast ${type === 'error' ? 'error' : ''}`;
             toast.innerHTML = `${icon} <span>${message}</span>`;
             
             container.appendChild(toast);
@@ -355,42 +286,57 @@
             setTimeout(() => {
                 toast.style.opacity = '0';
                 setTimeout(() => toast.remove(), 500);
-            }, 3000);
+            }, type === 'error' ? 6000 : 3000);
         }
 
-        async function setupApp() {
-            if (!isFirebaseInitialized) {
-                btnSubmit.disabled = false;
-                setupOfflineMode();
-                return;
+        // Inicialização do Firebase com Try/Catch para capturar se as chaves estão vazias
+        try {
+            if (firebaseConfig.apiKey === "COLE_SUA_API_KEY_AQUI") {
+                throw new Error("Chaves do Firebase não configuradas.");
             }
-            authStatus.classList.remove('hidden');
-            authStatus.textContent = "Conectando ao banco de dados...";
-
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                
-                currentUser = auth.currentUser;
-                authStatus.classList.add('hidden');
-                btnSubmit.disabled = false;
-                setupRealtimeListener();
-            } catch (error) {
-                console.error("Erro na autenticação:", error);
-                authStatus.textContent = "Erro de conexão. Tente recarregar a página.";
-                authStatus.classList.add('text-red-500');
-            }
-        }
-
-        function setupRealtimeListener() {
-            if (!currentUser || !isFirebaseInitialized) return;
-
-            const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'agendamentos');
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            setupRealtimeListener();
             
-            // onSnapshot garante que os dados atualizam em tempo real e mantem na tela ao recarregar a página
+            statusSincronizacao.innerHTML = `
+                <span class="relative flex h-3 w-3 mr-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-valorem"></span>
+                </span> Sincronizado ao vivo
+            `;
+        } catch (error) {
+            console.error("Erro ao inicializar Firebase:", error);
+            
+            statusSincronizacao.innerHTML = `<span class="text-red-500 font-bold">Desconectado (Falta Configuração)</span>`;
+            tabelaCorpo.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-red-500 font-medium">Erro: Banco de dados não configurado. Verifique o código fonte.</td></tr>`;
+            
+            // Exibe o "alert" em formato de toast conforme solicitado
+            setTimeout(() => {
+                showToast("Erro ao gravar no banco! Verifique se você preencheu as chaves do Firebase e habilitou o Firestore.", "error");
+            }, 1000);
+        }
+
+        // Alternância entre abas
+        window.switchTab = function(tabName) {
+            document.getElementById('view-registrar').classList.toggle('hidden-view', tabName !== 'registrar');
+            document.getElementById('view-consultas').classList.toggle('hidden-view', tabName !== 'consultas');
+            
+            const btnReg = document.getElementById('tab-btn-registrar');
+            const btnCon = document.getElementById('tab-btn-consultas');
+            
+            if (tabName === 'registrar') {
+                btnReg.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
+                btnCon.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
+            } else {
+                btnCon.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
+                btnReg.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
+            }
+        };
+
+        // Escuta em tempo real do banco de dados
+        function setupRealtimeListener() {
+            const collectionRef = collection(db, 'agendamentos');
+            
             onSnapshot(collectionRef, 
                 (snapshot) => {
                     todosRegistros = [];
@@ -398,27 +344,62 @@
                         todosRegistros.push({ id: doc.id, ...doc.data() });
                     });
                     
-                    // Ordenar por ordem de agendamento (mais recentes primeiro)
+                    // Ordena pelos mais recentes (maior timestamp primeiro)
                     todosRegistros.sort((a, b) => b.timestamp - a.timestamp);
-                    
                     renderTable(todosRegistros);
                 },
                 (error) => {
-                    console.error("Erro ao escutar dados:", error);
-                    tabelaCorpo.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-red-500">Erro ao carregar dados.</td></tr>`;
+                    console.error("Erro no onSnapshot:", error);
+                    showToast("Erro ao ler dados do banco. Verifique as permissões do Firestore.", "error");
                 }
             );
         }
 
-        function formatarDataHora(timestamp) {
-            if (!timestamp) return '-';
-            const data = new Date(timestamp);
-            return data.toLocaleString('pt-BR', { 
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute:'2-digit'
-            });
-        }
+        // Lógica de envio do formulário (Salvar)
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Pega a data e hora do exato momento
+            const agora = new Date();
+            
+            const novoAgendamento = {
+                operacao: document.getElementById('operacao').value,
+                data_operacao: document.getElementById('data_operacao').value,
+                motorista: document.getElementById('motorista').value.toUpperCase(),
+                transportadora: document.getElementById('transportadora').value.toUpperCase(),
+                placa_cavalo: document.getElementById('placa_cavalo').value.toUpperCase(),
+                placa_carreta: document.getElementById('placa_carreta').value.toUpperCase(),
+                telefone: document.getElementById('telefone').value,
+                timestamp: agora.getTime(),
+                data_registro_formatada: agora.toLocaleString('pt-BR', { 
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute:'2-digit'
+                })
+            };
 
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = 'Gravando...';
+
+            try {
+                // Tenta salvar na coleção 'agendamentos'
+                const collectionRef = collection(db, 'agendamentos');
+                await addDoc(collectionRef, novoAgendamento);
+                
+                // Sucesso
+                form.reset();
+                showToast('Agendamento salvo com sucesso no banco de dados!');
+                
+            } catch (error) {
+                // Falha
+                console.error("Erro ao gravar:", error);
+                showToast("Erro ao gravar no banco! Verifique se você preencheu as chaves do Firebase e habilitou o Firestore.", "error");
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = 'Registrar Entrada';
+            }
+        });
+
+        // Formatação de data simples YYYY-MM-DD para DD/MM/YYYY
         function formatarDataSimples(dataStr) {
             if (!dataStr) return '-';
             const partes = dataStr.split('-');
@@ -426,7 +407,7 @@
             return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
-        // Obtém a data local de hoje no formato YYYY-MM-DD
+        // Obtém a data local de hoje no formato YYYY-MM-DD para o filtro
         function obterDataLocalHoje() {
             const data = new Date();
             const offset = data.getTimezoneOffset();
@@ -434,14 +415,13 @@
             return dataLocal.toISOString().split('T')[0];
         }
 
+        // Renderiza a tabela aplicando a regra de filtro (Ocultar passados)
         function renderTable(dados) {
             tabelaCorpo.innerHTML = '';
-            
             const hojeStr = obterDataLocalHoje();
 
-            // Filtrar dados baseados no toggle
             const dadosFiltrados = dados.filter(item => {
-                if (mostrarDiasAnteriores) return true; // Mostra todos se toggle ativado
+                if (mostrarDiasAnteriores) return true; // Se toggle ativo, mostra tudo
                 // Se toggle desativado, mostra apenas se data da operação for HOJE ou FUTURO
                 return item.data_operacao >= hojeStr;
             });
@@ -460,7 +440,7 @@
                     if(item.operacao === 'Descarga') opColorClass = "bg-valorem/20 text-valorem-dark";
                     
                     tr.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatarDataHora(item.timestamp)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.data_registro_formatada || '-'}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${formatarDataSimples(item.data_operacao)}</td>
                         <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${opColorClass}">${item.operacao}</span></td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.motorista}</td>
@@ -474,62 +454,28 @@
             }
         }
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Lógica do botão Toggle para mostrar dias anteriores
+        btnTogglePast.addEventListener('click', () => {
+            mostrarDiasAnteriores = !mostrarDiasAnteriores;
             
-            const operacao = document.getElementById('operacao').value;
-            const data_operacao = document.getElementById('data_operacao').value;
-            const motorista = document.getElementById('motorista').value;
-            const transportadora = document.getElementById('transportadora').value;
-            const placa_cavalo = document.getElementById('placa_cavalo').value.toUpperCase();
-            const placa_carreta = document.getElementById('placa_carreta').value.toUpperCase();
-            const telefone = document.getElementById('telefone').value;
-
-            if (!operacao || !data_operacao || !motorista || !transportadora || !placa_cavalo) {
-                showToast('Preencha os campos obrigatórios.', 'error');
-                return;
+            if (mostrarDiasAnteriores) {
+                btnTogglePast.innerHTML = '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg> Ocultar dias anteriores';
+                btnTogglePast.classList.replace('bg-gray-200', 'bg-valorem');
+                btnTogglePast.classList.replace('text-gray-700', 'text-white');
+                btnTogglePast.classList.replace('hover:bg-gray-300', 'hover:bg-valorem-dark');
+            } else {
+                btnTogglePast.innerHTML = '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Mostrar dias anteriores';
+                btnTogglePast.classList.replace('bg-valorem', 'bg-gray-200');
+                btnTogglePast.classList.replace('text-white', 'text-gray-700');
+                btnTogglePast.classList.replace('hover:bg-valorem-dark', 'hover:bg-gray-300');
             }
-
-            const novoAgendamento = {
-                operacao,
-                data_operacao,
-                motorista,
-                transportadora,
-                placa_cavalo,
-                placa_carreta,
-                telefone,
-                timestamp: Date.now(), // Grava timestamp do exato momento
-                criadoPor: currentUser ? currentUser.uid : 'anonimo'
-            };
-
-            btnSubmit.disabled = true;
-            btnSubmit.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Registrando...';
-
-            try {
-                if (isFirebaseInitialized && currentUser) {
-                    const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'agendamentos');
-                    await addDoc(collectionRef, novoAgendamento);
-                } else {
-                    salvarMockLocal(novoAgendamento);
-                }
-                
-                form.reset();
-                showToast('Entrada registrada com sucesso!');
-
-            } catch (error) {
-                console.error("Erro ao salvar:", error);
-                showToast('Erro ao salvar registro.', 'error');
-            } finally {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = 'Registrar Entrada';
-            }
+            renderTable(todosRegistros);
         });
 
-        // Formatação Automática de Placas
+        // Máscaras Automáticas
         function aplicarMascaraPlaca(e) {
-            let valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // Somente alfanuméricos
+            let valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
             if (valor.length > 3) {
-                // Inserir o hífen obrigatoriamente após a 3ª letra
                 valor = valor.substring(0, 3) + '-' + valor.substring(3, 7);
             }
             e.target.value = valor;
@@ -538,7 +484,6 @@
         document.getElementById('placa_cavalo').addEventListener('input', aplicarMascaraPlaca);
         document.getElementById('placa_carreta').addEventListener('input', aplicarMascaraPlaca);
 
-        // Máscara de Telefone BR
         document.getElementById('telefone').addEventListener('input', function(e) {
             let v = e.target.value.replace(/\D/g, "");
             v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); 
@@ -546,17 +491,6 @@
             e.target.value = v.substring(0, 15);
         });
 
-        function setupOfflineMode() {
-            tabelaCorpo.innerHTML = `<tr><td colspan="8" class="px-6 py-10 text-center text-gray-500">Modo de demonstração local ativo.</td></tr>`;
-            renderTable(todosRegistros);
-        }
-
-        function salvarMockLocal(dado) {
-            todosRegistros.unshift(dado);
-            renderTable(todosRegistros);
-        }
-
-        setupApp();
     </script>
 </body>
 </html>
