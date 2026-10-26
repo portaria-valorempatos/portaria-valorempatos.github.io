@@ -36,8 +36,10 @@
             <img src="valorem-logotipo-horizontal-verde-com-slogan-transparente.png" alt="Valorem Logotipo" class="h-10 object-contain">
         </div>
         <div class="flex items-center space-x-3">
-            <span id="status-conexao" class="text-xs px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-800">Conectando ao Banco...</span>
-            <div class="text-xs text-slate-400 font-medium hidden sm:block">Controle de Portaria & Agendamentos</div>
+            <span id="status-conexao" class="text-xs px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-800">Conectando...</span>
+            <button onclick="solicitarSenhaAdmin()" id="btn-admin-status" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-300">
+                🔒 Modo Portaria (Admin)
+            </button>
         </div>
     </header>
 
@@ -48,7 +50,7 @@
         <div class="flex justify-center mb-6">
             <div class="bg-slate-200 p-1 rounded-xl flex space-x-1 shadow-inner">
                 <button id="tab-registrar" onclick="switchTab('registrar')" class="px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-valorem shadow-sm">
-                    Registrar (Portaria)
+                    Registrar / Gerenciar
                 </button>
                 <button id="tab-consultas" onclick="switchTab('consultas')" class="px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900">
                     Consultas (Público)
@@ -56,14 +58,20 @@
             </div>
         </div>
 
-        <!-- Seção 1: Formulário de Registro -->
+        <!-- Seção 1: Formulário de Registro / Edição -->
         <section id="section-registrar" class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 max-w-3xl mx-auto">
-            <div class="bg-valorem p-6 text-white">
-                <h2 class="text-xl font-bold tracking-wide">Novo Agendamento</h2>
-                <p class="text-xs text-green-100 mt-1">Preencha os dados de entrada na portaria.</p>
+            <div class="bg-valorem p-6 text-white flex justify-between items-center">
+                <div>
+                    <h2 id="form-titulo" class="text-xl font-bold tracking-wide">Novo Agendamento</h2>
+                    <p id="form-subtitulo" class="text-xs text-green-100 mt-1">Preencha os dados de entrada na portaria.</p>
+                </div>
+                <button id="btn-cancelar-edicao" onclick="cancelarEdicao()" class="hidden bg-amber-500 hover:bg-amber-600 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition">
+                    Cancelar Edição
+                </button>
             </div>
 
             <form id="form-agendamento" onsubmit="salvarAgendamento(event)" class="p-6 sm:p-8 space-y-5">
+                <input type="hidden" id="edit-id" value="">
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <!-- Operação -->
@@ -152,7 +160,7 @@
 
                 <!-- Botão Salvar -->
                 <div class="pt-3">
-                    <button type="submit" class="w-full bg-valorem hover:bg-valorem-dark text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2">
+                    <button type="submit" id="btn-submit" class="w-full bg-valorem hover:bg-valorem-dark text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2">
                         <span>Registrar Entrada</span>
                     </button>
                 </div>
@@ -182,10 +190,11 @@
                                 <th class="p-4">Placa Cavalo</th>
                                 <th class="p-4">Placa Carreta</th>
                                 <th class="p-4">Telefone</th>
+                                <th id="th-acoes" class="p-4 text-center hidden">Ações (Admin)</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-registros" class="divide-y divide-slate-100 text-sm text-slate-700">
-                            <tr><td colspan="8" class="text-center p-8 text-slate-400 font-medium">Carregando registros...</td></tr>
+                            <tr><td colspan="9" class="text-center p-8 text-slate-400 font-medium">Carregando registros...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -193,6 +202,19 @@
         </section>
 
     </main>
+
+    <!-- Modal de Senha Admin -->
+    <div id="modal-admin" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200">
+            <h3 class="text-lg font-bold text-slate-800">Acesso Restrito à Portaria</h3>
+            <p class="text-xs text-slate-500">Digite a senha de administrador para poder editar ou excluir registros.</p>
+            <input type="password" id="senha-admin-input" placeholder="Digite a senha" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem outline-none text-slate-700">
+            <div class="flex space-x-3 pt-2">
+                <button onclick="fecharModalAdmin()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-xl text-sm transition">Cancelar</button>
+                <button onclick="verificarSenhaAdmin()" class="flex-1 bg-valorem hover:bg-valorem-dark text-white font-semibold py-2 rounded-xl text-sm transition">Entrar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Rodapé -->
     <footer class="text-center py-4 text-xs text-slate-400">
@@ -219,6 +241,8 @@
         let db;
         let registrosCache = [];
         let mostrarAntigos = false;
+        let isAdmin = false;
+        const SENHA_MESTRE = "valorem2026"; // Senha para desbloquear modo admin (Pode alterar aqui se quiser)
 
         try {
             firebase.initializeApp(firebaseConfig);
@@ -252,6 +276,42 @@
                 secCon.classList.remove('hidden');
                 secReg.classList.add('hidden');
                 renderizarTabela();
+            }
+        }
+
+        function solicitarSenhaAdmin() {
+            if (isAdmin) {
+                if (confirm("Deseja sair do modo Administrador?")) {
+                    isAdmin = false;
+                    document.getElementById('btn-admin-status').innerText = "🔒 Modo Portaria (Admin)";
+                    document.getElementById('btn-admin-status').className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-300";
+                    renderizarTabela();
+                    mostrarToast("Modo Admin encerrado.");
+                }
+                return;
+            }
+            document.getElementById('modal-admin').classList.remove('hidden');
+            document.getElementById('modal-admin').classList.add('flex');
+            document.getElementById('senha-admin-input').value = '';
+            document.getElementById('senha-admin-input').focus();
+        }
+
+        function fecharModalAdmin() {
+            document.getElementById('modal-admin').classList.remove('flex');
+            document.getElementById('modal-admin').classList.add('hidden');
+        }
+
+        function verificarSenhaAdmin() {
+            const senha = document.getElementById('senha-admin-input').value;
+            if (senha === SENHA_MESTRE) {
+                isAdmin = true;
+                fecharModalAdmin();
+                document.getElementById('btn-admin-status').innerText = "🔓 Admin Ativo (Sair)";
+                document.getElementById('btn-admin-status').className = "bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm";
+                renderizarTabela();
+                mostrarToast("Modo Administrador ativado com sucesso!");
+            } else {
+                mostrarToast("Senha incorreta!", true);
             }
         }
 
@@ -289,6 +349,7 @@
         async function salvarAgendamento(e) {
             e.preventDefault();
 
+            const editId = document.getElementById('edit-id').value;
             const agora = new Date();
             const dataRegistro = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
             
@@ -296,7 +357,7 @@
             const partesData = dataOpRaw.split('-');
             const dataOperacaoFmt = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
 
-            const novoRegistro = {
+            const dadosRegistro = {
                 timestamp: Date.now(),
                 dataRegistro: dataRegistro,
                 dataOperacaoISO: dataOpRaw,
@@ -311,17 +372,71 @@
 
             if (db) {
                 try {
-                    await db.collection("agendamentos").add(novoRegistro);
-                    mostrarToast('Agendamento registrado com sucesso!');
-                    document.getElementById('form-agendamento').reset();
-                    document.getElementById('data-operacao').valueAsDate = new Date();
+                    if (editId) {
+                        // Atualizar registro existente
+                        await db.collection("agendamentos").doc(editId).update(dadosRegistro);
+                        mostrarToast('Agendamento atualizado com sucesso!');
+                        cancelarEdicao();
+                    } else {
+                        // Criar novo registro
+                        await db.collection("agendamentos").add(dadosRegistro);
+                        mostrarToast('Agendamento registrado com sucesso!');
+                        document.getElementById('form-agendamento').reset();
+                        document.getElementById('data-operacao').valueAsDate = new Date();
+                    }
                     switchTab('consultas');
                 } catch (err) {
-                    console.error("Erro ao salvar no Firestore:", err);
-                    mostrarToast('Erro ao gravar no banco. Verifique as regras do Firestore.', true);
+                    console.error("Erro ao salvar:", err);
+                    mostrarToast('Erro ao gravar no banco.', true);
                 }
-            } else {
-                mostrarToast('Banco de dados não conectado.', true);
+            }
+        }
+
+        function prepararEdicao(id) {
+            const reg = registrosCache.find(r => r.id === id);
+            if (!reg) return;
+
+            document.getElementById('edit-id').value = reg.id;
+            document.getElementById('operacao').value = reg.operacao;
+            document.getElementById('data-operacao').value = reg.dataOperacaoISO;
+            document.getElementById('motorista').value = reg.motorista;
+            document.getElementById('transportadora').value = reg.transportadora;
+            document.getElementById('placa-cavalo').value = reg.placaCavalo;
+            document.getElementById('placa-carreta').value = reg.placaCarreta === '-' ? '' : reg.placaCarreta;
+            document.getElementById('telefone').value = reg.telefone === '-' ? '' : reg.telefone;
+
+            document.getElementById('form-titulo').innerText = "Editar Agendamento";
+            document.getElementById('form-subtitulo').innerText = "Editando registro selecionado.";
+            document.getElementById('btn-submit').querySelector('span').innerText = "Salvar Alterações";
+            document.getElementById('btn-cancelar-edicao').classList.remove('hidden');
+
+            switchTab('registrar');
+        }
+
+        function cancelarEdicao() {
+            document.getElementById('edit-id').value = '';
+            document.getElementById('form-agendamento').reset();
+            document.getElementById('data-operacao').valueAsDate = new Date();
+            document.getElementById('form-titulo').innerText = "Novo Agendamento";
+            document.getElementById('form-subtitulo').innerText = "Preencha os dados de entrada na portaria.";
+            document.getElementById('btn-submit').querySelector('span').innerText = "Registrar Entrada";
+            document.getElementById('btn-cancelar-edicao').classList.add('hidden');
+        }
+
+        async function excluirRegistro(id) {
+            if (!isAdmin) {
+                solicitarSenhaAdmin();
+                return;
+            }
+
+            if (confirm("Tem certeza que deseja excluir este agendamento do banco de dados?")) {
+                try {
+                    await db.collection("agendamentos").doc(id).delete();
+                    mostrarToast("Registro excluído com sucesso!");
+                } catch (err) {
+                    console.error("Erro ao excluir:", err);
+                    mostrarToast("Erro ao excluir registro.", true);
+                }
             }
         }
 
@@ -352,7 +467,14 @@
 
         function renderizarTabela() {
             const tbody = document.getElementById('tabela-registros');
+            const thAcoes = document.getElementById('th-acoes');
             const hojeISO = new Date().toISOString().split('T')[0];
+
+            if (isAdmin) {
+                thAcoes.classList.remove('hidden');
+            } else {
+                thAcoes.classList.add('hidden');
+            }
 
             const filtrados = registrosCache.filter(r => {
                 if (mostrarAntigos) return true;
@@ -360,7 +482,8 @@
             });
 
             if (filtrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center p-8 text-slate-400 font-medium">Nenhum registro encontrado para exibição.</td></tr>`;
+                const colSpan = isAdmin ? 9 : 8;
+                tbody.innerHTML = `<tr><td colspan="${colSpan}" class="text-center p-8 text-slate-400 font-medium">Nenhum registro encontrado para exibição.</td></tr>`;
                 return;
             }
 
@@ -374,6 +497,11 @@
                     <td class="p-4 font-mono font-medium">${r.placaCavalo}</td>
                     <td class="p-4 font-mono text-slate-500">${r.placaCarreta}</td>
                     <td class="p-4 font-mono text-slate-600">${r.telefone}</td>
+                    ${isAdmin ? `
+                        <td class="p-4 text-center space-x-2">
+                            <button onclick="prepararEdicao('${r.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition" title="Editar">✏️ Editar</button>
+                            <button onclick="excluirRegistro('${r.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition" title="Excluir">🗑️ Excluir</button>
+                        ` : ''}
                 </tr>
             `).join('');
         }
