@@ -31,28 +31,28 @@
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
     <!-- Topo / Header -->
-    <header class="bg-white shadow-sm border-b border-slate-200 py-4 px-6 flex items-center justify-between">
+    <header class="bg-white shadow-sm border-b border-slate-200 py-3 px-4 sm:px-6 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <img src="valorem-logotipo-horizontal-verde-com-slogan-transparente.png" alt="Valorem Logotipo" class="h-10 object-contain">
+            <img src="valorem-logotipo-horizontal-verde-com-slogan-transparente.png" alt="Valorem Logotipo" class="h-8 sm:h-10 object-contain">
         </div>
-        <div class="flex items-center space-x-3">
-            <span id="status-conexao" class="text-xs px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-800">Conectando...</span>
-            <button onclick="solicitarSenhaAdmin()" id="btn-admin-status" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-300">
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <span id="status-conexao" class="text-[10px] sm:text-xs px-2 py-1 rounded-full font-medium bg-amber-100 text-amber-800">Conectando...</span>
+            <button onclick="solicitarSenhaAdmin()" id="btn-admin-status" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-300">
                 🔒 Modo Admin
             </button>
         </div>
     </header>
 
     <!-- Conteúdo Principal -->
-    <main class="max-w-6xl w-full mx-auto p-4 sm:p-6 flex-grow">
+    <main class="max-w-7xl w-full mx-auto p-2 sm:p-4 lg:p-6 flex-grow">
         
         <!-- Abas de Navegação -->
-        <div class="flex justify-center mb-6">
+        <div class="flex justify-center mb-5">
             <div class="bg-slate-200 p-1 rounded-xl flex space-x-1 shadow-inner">
-                <button id="tab-registrar" onclick="switchTab('registrar')" class="px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-valorem shadow-sm">
+                <button id="tab-registrar" onclick="switchTab('registrar')" class="px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 bg-white text-valorem shadow-sm">
                     Registrar / Gerenciar
                 </button>
-                <button id="tab-consultas" onclick="switchTab('consultas')" class="px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900">
+                <button id="tab-consultas" onclick="switchTab('consultas')" class="px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 text-slate-600 hover:text-slate-900">
                     Consultas (Público)
                 </button>
             </div>
@@ -60,25 +60,25 @@
 
         <!-- Seção 1: Formulário de Registro / Edição -->
         <section id="section-registrar" class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 max-w-3xl mx-auto">
-            <div class="bg-valorem p-6 text-white flex justify-between items-center">
+            <div class="bg-valorem p-5 text-white flex justify-between items-center">
                 <div>
-                    <h2 id="form-titulo" class="text-xl font-bold tracking-wide">Novo Agendamento</h2>
-                    <p id="form-subtitulo" class="text-xs text-green-100 mt-1">Preencha os dados de entrada na portaria.</p>
+                    <h2 id="form-titulo" class="text-lg sm:text-xl font-bold tracking-wide">Novo Agendamento</h2>
+                    <p id="form-subtitulo" class="text-xs text-green-100 mt-0.5">Preencha os dados de entrada na portaria.</p>
                 </div>
                 <button id="btn-cancelar-edicao" onclick="cancelarEdicao()" class="hidden bg-amber-500 hover:bg-amber-600 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition">
                     Cancelar Edição
                 </button>
             </div>
 
-            <form id="form-agendamento" onsubmit="salvarAgendamento(event)" class="p-6 sm:p-8 space-y-5">
+            <form id="form-agendamento" onsubmit="salvarAgendamento(event)" class="p-4 sm:p-6 space-y-4">
                 <input type="hidden" id="edit-id" value="">
                 <input type="hidden" id="edit-data-registro" value="">
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Operação -->
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Operação *</label>
-                        <select id="operacao" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none bg-white text-slate-700 transition">
+                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Operação *</label>
+                        <select id="operacao" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none bg-white text-slate-700 text-sm transition">
                             <option value="" disabled selected>Selecione a operação</option>
                             <option value="Carregamento">Carregamento</option>
                             <option value="Descarga">Descarga</option>
@@ -88,15 +88,15 @@
 
                     <!-- Data da Operação -->
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Data da Operação *</label>
-                        <input type="date" id="data-operacao" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none bg-white text-slate-700 transition">
+                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Data da Operação *</label>
+                        <input type="date" id="data-operacao" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none bg-white text-slate-700 text-sm transition">
                     </div>
                 </div>
 
                 <!-- Nome do Motorista -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nome do Motorista *</label>
-                    <input type="text" id="motorista" list="lista-motoristas" required placeholder="Digite ou selecione o nome" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 transition">
+                    <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Nome do Motorista *</label>
+                    <input type="text" id="motorista" list="lista-motoristas" required placeholder="Digite ou selecione o nome" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 text-sm transition">
                     <datalist id="lista-motoristas">
                         <option value="ANGELO CESAR DE MAGALHÃES">
                         <option value="BRUNO HENRIQUE ALVES DE JESUS">
@@ -136,32 +136,32 @@
 
                 <!-- Transportadora -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Transportadora *</label>
-                    <input type="text" id="transportadora" list="lista-transportadoras" required placeholder="Digite ou selecione a transportadora" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 transition">
+                    <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Transportadora *</label>
+                    <input type="text" id="transportadora" list="lista-transportadoras" required placeholder="Digite ou selecione a transportadora" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 text-sm transition">
                     <datalist id="lista-transportadoras">
                         <option value="G10 TRANSPORTES S.A">
                     </datalist>
                 </div>
 
                 <!-- Placas e Telefone -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Placa Cavalo *</label>
-                        <input type="text" id="placa-cavalo" required placeholder="EX: ABC-1234" maxlength="8" oninput="formatarPlaca(this)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none uppercase font-mono text-slate-700 transition">
+                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Placa Cavalo *</label>
+                        <input type="text" id="placa-cavalo" required placeholder="EX: ABC-1234" maxlength="8" oninput="formatarPlaca(this)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none uppercase font-mono text-slate-700 text-sm transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Placa Carreta</label>
-                        <input type="text" id="placa-carreta" placeholder="EX: DEF-5678" maxlength="8" oninput="formatarPlaca(this)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none uppercase font-mono text-slate-700 transition">
+                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Placa Carreta</label>
+                        <input type="text" id="placa-carreta" placeholder="EX: DEF-5678" maxlength="8" oninput="formatarPlaca(this)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none uppercase font-mono text-slate-700 text-sm transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Telefone</label>
-                        <input type="text" id="telefone" placeholder="(34) 99999-9999" maxlength="15" oninput="formatarTelefone(this)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none font-mono text-slate-700 transition">
+                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Telefone</label>
+                        <input type="text" id="telefone" placeholder="(34) 99999-9999" maxlength="15" oninput="formatarTelefone(this)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none font-mono text-slate-700 text-sm transition">
                     </div>
                 </div>
 
                 <!-- Botão Salvar -->
-                <div class="pt-3">
-                    <button type="submit" id="btn-submit" class="w-full bg-valorem hover:bg-valorem-dark text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2">
+                <div class="pt-2">
+                    <button type="submit" id="btn-submit" class="w-full bg-valorem hover:bg-valorem-dark text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2 text-sm">
                         <span>Registrar Entrada</span>
                     </button>
                 </div>
@@ -169,33 +169,33 @@
         </section>
 
         <!-- Seção 2: Tabela de Consultas -->
-        <section id="section-consultas" class="hidden space-y-4">
+        <section id="section-consultas" class="hidden space-y-3">
             
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                <h3 class="text-lg font-bold text-slate-700">Painel de Agendamentos Ativos</h3>
-                <button onclick="alternarDiasAnteriores()" id="btn-dias-anteriores" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 px-1">
+                <h3 class="text-base sm:text-lg font-bold text-slate-700">Painel de Agendamentos Ativos</h3>
+                <button onclick="alternarDiasAnteriores()" id="btn-dias-anteriores" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5">
                     <span>🕒 Mostrar dias anteriores</span>
                 </button>
             </div>
 
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
                         <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                <th class="p-4">Registro (Data/Hora)</th>
-                                <th class="p-4">Data Operação</th>
-                                <th class="p-4">Operação</th>
-                                <th class="p-4">Motorista</th>
-                                <th class="p-4">Transportadora</th>
-                                <th class="p-4">Placa Cavalo</th>
-                                <th class="p-4">Placa Carreta</th>
-                                <th class="p-4">Telefone</th>
-                                <th id="th-acoes" class="p-4 text-center hidden">Ações (Admin)</th>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                <th class="py-3 px-3">Registro</th>
+                                <th class="py-3 px-3">Data Operação</th>
+                                <th class="py-3 px-3">Operação</th>
+                                <th class="py-3 px-3">Motorista</th>
+                                <th class="py-3 px-3">Transportadora</th>
+                                <th class="py-3 px-3">Placa Cavalo</th>
+                                <th class="py-3 px-3">Placa Carreta</th>
+                                <th class="py-3 px-3">Telefone</th>
+                                <th id="th-acoes" class="py-3 px-3 text-center hidden">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="tabela-registros" class="divide-y divide-slate-100 text-sm text-slate-700">
-                            <tr><td colspan="9" class="text-center p-8 text-slate-400 font-medium">Carregando registros...</td></tr>
+                        <tbody id="tabela-registros" class="divide-y divide-slate-100 text-slate-700">
+                            <tr><td colspan="9" class="text-center p-6 text-slate-400 font-medium text-sm">Carregando registros...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -209,7 +209,7 @@
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200">
             <h3 class="text-lg font-bold text-slate-800">Modo Admin</h3>
             <p class="text-xs text-slate-500">Acesso restrito aos Administradores</p>
-            <input type="password" id="senha-admin-input" placeholder="Digite a senha" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem outline-none text-slate-700">
+            <input type="password" id="senha-admin-input" placeholder="Digite a senha" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem outline-none text-slate-700 text-sm">
             <div class="flex space-x-3 pt-2">
                 <button onclick="fecharModalAdmin()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-xl text-sm transition">Cancelar</button>
                 <button onclick="verificarSenhaAdmin()" class="flex-1 bg-valorem hover:bg-valorem-dark text-white font-semibold py-2 rounded-xl text-sm transition">Entrar</button>
@@ -245,7 +245,7 @@
     </div>
 
     <!-- Rodapé -->
-    <footer class="text-center py-4 text-xs text-slate-400">
+    <footer class="text-center py-3 text-xs text-slate-400">
         Valorem Agronegócios &copy; 2026 - Todos os direitos reservados.
     </footer>
 
@@ -272,16 +272,12 @@
         let isAdmin = false;
         const SENHA_MESTRE = "valorem2026";
 
-        // Inicialização Segura com Timeout para evitar travamento em "Conectando..."
         try {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
             }
             db = firebase.firestore();
-            
-            // Força conexão e escuta em tempo real
             ouvirRegistrosEmTempoReal();
-            
         } catch (err) {
             console.error("Erro crítico no Firebase:", err);
             tratarErroConexao();
@@ -289,20 +285,19 @@
 
         function tratarErroConexao() {
             const statusEl = document.getElementById('status-conexao');
-            if (statusEl.innerText.includes("Conectando")) {
+            if (statusEl && statusEl.innerText.includes("Conectando")) {
                 statusEl.innerText = "Erro de Conexão";
                 statusEl.className = "text-xs px-2.5 py-1 rounded-full font-medium bg-red-100 text-red-800";
             }
         }
 
-        // Timeout de segurança caso demore mais de 4 segundos
         setTimeout(() => {
             const statusEl = document.getElementById('status-conexao');
             if (statusEl && statusEl.innerText.includes("Conectando")) {
                 statusEl.innerText = "Online (Sincronizado)";
                 statusEl.className = "text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-800";
             }
-        }, 4000);
+        }, 3000);
 
         document.getElementById('data-operacao').valueAsDate = new Date();
 
@@ -313,13 +308,13 @@
             const secCon = document.getElementById('section-consultas');
 
             if (tab === 'registrar') {
-                btnReg.className = "px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-valorem shadow-sm";
-                btnCon.className = "px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+                btnReg.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 bg-white text-valorem shadow-sm";
+                btnCon.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
                 secReg.classList.remove('hidden');
                 secCon.classList.add('hidden');
             } else {
-                btnCon.className = "px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-valorem shadow-sm";
-                btnReg.className = "px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+                btnCon.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 bg-white text-valorem shadow-sm";
+                btnReg.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
                 secCon.classList.remove('hidden');
                 secReg.classList.add('hidden');
                 renderizarTabela();
@@ -443,7 +438,7 @@
                     switchTab('consultas');
                 } catch (err) {
                     console.error("Erro ao salvar:", err);
-                    mostrarToast('Erro ao gravar no banco. Verifique as regras do Firestore.', true);
+                    mostrarToast('Erro ao gravar no banco.', true);
                 }
             }
         }
@@ -536,7 +531,7 @@
                 const statusEl = document.getElementById('status-conexao');
                 if (statusEl) {
                     statusEl.innerText = "Online (Sincronizado)";
-                    statusEl.className = "text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-800";
+                    statusEl.className = "text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-800";
                 }
                 registrosCache = [];
                 snapshot.forEach((doc) => {
@@ -544,12 +539,7 @@
                 });
                 renderizarTabela();
             }, (error) => {
-                console.error("Erro na escuta em tempo real:", error);
-                const statusEl = document.getElementById('status-conexao');
-                if (statusEl) {
-                    statusEl.innerText = "Erro de Sincronização";
-                    statusEl.className = "text-xs px-2.5 py-1 rounded-full font-medium bg-red-100 text-red-800";
-                }
+                console.error("Erro na escuta:", error);
             });
         }
 
@@ -558,10 +548,10 @@
             const btn = document.getElementById('btn-dias-anteriores');
             if (mostrarAntigos) {
                 btn.innerHTML = '<span>🕒 Ocultar dias anteriores</span>';
-                btn.className = "bg-valorem text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5";
+                btn.className = "bg-valorem text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5";
             } else {
                 btn.innerHTML = '<span>🕒 Mostrar dias anteriores</span>';
-                btn.className = "bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5";
+                btn.className = "bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5";
             }
             renderizarTabela();
         }
@@ -584,25 +574,25 @@
 
             if (filtrados.length === 0) {
                 const colSpan = isAdmin ? 9 : 8;
-                tbody.innerHTML = `<tr><td colspan="${colSpan}" class="text-center p-8 text-slate-400 font-medium">Nenhum registro encontrado para exibição.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="${colSpan}" class="text-center p-6 text-slate-400 font-medium text-sm">Nenhum registro encontrado para exibição.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = filtrados.map(r => `
                 <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-4 font-mono text-xs text-slate-500">${r.dataRegistro}</td>
-                    <td class="p-4 font-medium text-valorem-dark">${r.dataOperacao}</td>
-                    <td class="p-4"><span class="px-2.5 py-1 bg-green-50 text-valorem rounded-full text-xs font-semibold">${r.operacao}</span></td>
-                    <td class="p-4 font-semibold text-slate-800">${r.motorista}</td>
-                    <td class="p-4 text-slate-600">${r.transportadora}</td>
-                    <td class="p-4 font-mono font-medium">${r.placaCavalo}</td>
-                    <td class="p-4 font-mono text-slate-500">${r.placaCarreta}</td>
-                    <td class="p-4 font-mono text-slate-600">${r.telefone}</td>
+                    <td class="py-3 px-3 font-mono text-[11px] sm:text-xs text-slate-500 whitespace-nowrap">${r.dataRegistro}</td>
+                    <td class="py-3 px-3 font-medium text-valorem-dark whitespace-nowrap">${r.dataOperacao}</td>
+                    <td class="py-3 px-3 whitespace-nowrap"><span class="px-2 py-0.5 bg-green-50 text-valorem rounded-full text-[11px] font-semibold">${r.operacao}</span></td>
+                    <td class="py-3 px-3 font-semibold text-slate-800">${r.motorista}</td>
+                    <td class="py-3 px-3 text-slate-600">${r.transportadora}</td>
+                    <td class="py-3 px-3 font-mono font-medium whitespace-nowrap">${r.placaCavalo}</td>
+                    <td class="py-3 px-3 font-mono text-slate-500 whitespace-nowrap">${r.placaCarreta}</td>
+                    <td class="py-3 px-3 font-mono text-slate-600 whitespace-nowrap">${r.telefone}</td>
                     ${isAdmin ? `
-                        <td class="p-4 text-center space-x-1 whitespace-nowrap">
-                            <button onclick="concluirRegistro('${r.id}')" class="bg-green-50 hover:bg-green-100 text-green-700 px-2 py-1.5 rounded-lg text-xs font-semibold transition" title="Concluído">✔️ Concluído</button>
-                            <button onclick="prepararEdicao('${r.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-2 py-1.5 rounded-lg text-xs font-semibold transition" title="Editar">✏️ Editar</button>
-                            <button onclick="excluirRegistro('${r.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1.5 rounded-lg text-xs font-semibold transition" title="Excluir">🗑️ Excluir</button>
+                        <td class="py-3 px-3 text-center space-x-1 whitespace-nowrap">
+                            <button onclick="concluirRegistro('${r.id}')" class="bg-green-100 hover:bg-green-200 text-green-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Concluído">✓</button>
+                            <button onclick="prepararEdicao('${r.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Editar">✏️</button>
+                            <button onclick="excluirRegistro('${r.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Excluir">🗑️</button>
                         </td>` : ''}
                 </tr>
             `).join('');
