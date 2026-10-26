@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valorem - Agendamento Portaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        valorem: {
+                            DEFAULT: '#00732E', // Cor aproximada do CMYK 96, 31, 100, 23
+                            light: '#00943c',
+                            dark: '#005421'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Humanst521 BT"', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos adicionais para garantir visual limpo */
+        body {
+            background-color: #f3f4f6;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Ocultar elementos */
+        .hidden-view {
+            display: none;
+        }
+
+        /* Animação suave para as abas */
+        .tab-content {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilo para Toast (Notificações) */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background-color: #00732E;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Cabeçalho -->
+    <header class="bg-white shadow-sm border-b-4 border-valorem">
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-center sm:justify-start items-center">
+            <img src="valorem-logotipo-horizontal-verde-com-slogan-transparente.png" alt="Valorem" style="max-height: 50px; object-fit: contain;">
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        
+        <!-- Navegação de Abas -->
+        <div class="flex justify-center mb-8">
+            <div class="inline-flex bg-gray-200 rounded-lg p-1 shadow-inner">
+                <button id="tab-btn-registrar" class="tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow" onclick="switchTab('registrar')">
+                    Registrar (Portaria)
+                </button>
+                <button id="tab-btn-consultas" class="tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem" onclick="switchTab('consultas')">
+                    Consultas (Público)
+                </button>
+            </div>
+        </div>
+
+        <!-- Seção: Registrar (Portaria) -->
+        <section id="view-registrar" class="tab-content max-w-xl mx-auto">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="px-6 py-4 bg-valorem text-white border-b border-gray-200">
+                    <h2 class="text-lg font-semibold">Novo Agendamento</h2>
+                    <p class="text-sm opacity-90">Preencha os dados de entrada na portaria.</p>
+                </div>
+                
+                <form id="agendamento-form" class="p-6 space-y-5">
+                    <!-- Operação -->
+                    <div>
+                        <label for="operacao" class="block text-sm font-medium text-gray-700 mb-1">Operação *</label>
+                        <select id="operacao" name="operacao" required class="w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                            <option value="" disabled selected>Selecione a operação</option>
+                            <option value="Carregamento">Carregamento</option>
+                            <option value="Descarga">Descarga</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+
+                    <!-- Nome do Motorista com Datalist -->
+                    <div>
+                        <label for="motorista" class="block text-sm font-medium text-gray-700 mb-1">Nome do Motorista *</label>
+                        <input type="text" id="motorista" name="motorista" list="motoristas-list" required placeholder="Digite ou selecione o nome" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                        <datalist id="motoristas-list">
+                            <option value="ANGELO CESAR DE MAGALHÃES"></option>
+                            <option value="BRUNO HENRIQUE ALVES DE JESUS"></option>
+                            <option value="CLAUDIO APARECIDO DE ARAUJO"></option>
+                            <option value="DANIEL HENRIQUE DE SOUSA"></option>
+                            <option value="DENILSON LAZARO CORREA"></option>
+                            <option value="ECIO CRISTINO FERREIRA"></option>
+                            <option value="ERNANI EUSTAQUIO DE SOUSA"></option>
+                            <option value="FERNANDO DIVINO SILVESTRE"></option>
+                            <option value="JOAO BRAZ DE OLIVEIRA"></option>
+                            <option value="JOSE DOS REIS TEODORO"></option>
+                            <option value="JOSE VALDECIR CORREA"></option>
+                            <option value="JULIO CESAR DE OLIVEIRA"></option>
+                            <option value="KLEBER ADILSON LIUTI"></option>
+                            <option value="LINDOMAR MOREIRA DE LIMA"></option>
+                            <option value="MARCILIO NUNES GOMES"></option>
+                            <option value="MARCIO A. BATISTA PEREIRA"></option>
+                            <option value="MARCO TULIO DE MELO"></option>
+                            <option value="MAURINO DA SILVA CUSTODIO"></option>
+                            <option value="MAURO FRANCISCO PEREIRA"></option>
+                            <option value="MAX RICARDO PANTALEAO"></option>
+                            <option value="NATANIEL CICERO DA SILVA"></option>
+                            <option value="OSVANDO RODRIGUES ALVES"></option>
+                            <option value="RENIO JOSE PEREIRA"></option>
+                            <option value="RENIVALDO RENATO DE QUEIROZ"></option>
+                            <option value="RICARDO JOSE DE SOUSA"></option>
+                            <option value="RODRIGO DOS REIS VIEIRA"></option>
+                            <option value="ROSEY MARQUES DE FREITAS"></option>
+                            <option value="TIAGO AUGUSTO SILVA"></option>
+                            <option value="VANDERLEI MARTINS RIBEIRO"></option>
+                            <option value="VINICIUS JOSE DA CUNHA SILVEIRA"></option>
+                            <option value="WANDERSON VINICIUS DE SOUSA MACHADO"></option>
+                            <option value="WELLINGTON WESLEY A. FERREIRA"></option>
+                            <option value="WELTON DA SILVA LEMOS"></option>
+                        </datalist>
+                    </div>
+
+                    <!-- Placa e Telefone (Grid lado a lado em telas maiores) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="placa" class="block text-sm font-medium text-gray-700 mb-1">Placa *</label>
+                            <input type="text" id="placa" name="placa" required placeholder="Ex: ABC-1234" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase">
+                        </div>
+                        <div>
+                            <label for="telefone" class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                            <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Status de Autenticação/Carregamento -->
+                    <div id="auth-status" class="text-sm text-gray-500 italic hidden">Conectando ao sistema...</div>
+
+                    <!-- Botão de Envio -->
+                    <div class="pt-2">
+                        <button type="submit" id="btn-submit" disabled class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-valorem hover:bg-valorem-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-valorem disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                            Registrar Entrada
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Seção: Consultas (Público) -->
+        <section id="view-consultas" class="tab-content hidden-view">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                    <h2 class="text-lg font-semibold text-gray-800">Registros Recentes</h2>
+                    <div class="text-sm text-gray-500 flex items-center">
+                        <span class="relative flex h-3 w-3 mr-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-3 w-3 bg-valorem"></span>
+                        </span>
+                        Sincronizado ao vivo
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data/Hora</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operação</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Motorista</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefone</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-corpo" class="bg-white divide-y divide-gray-200">
+                            <!-- Linhas inseridas via JS -->
+                            <tr>
+                                <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-valorem inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Carregando dados...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="empty-state" class="hidden px-6 py-10 text-center text-gray-500">
+                    Nenhum registro encontrado.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Container para Toasts -->
+    <div id="toast-container"></div>
+
+    <!-- Lógica da Aplicação -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Variáveis de ambiente fornecidas pela plataforma
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'valorem-portaria-demo';
+        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+        let firebaseConfig = {};
+        
+        // Fallback config para permitir renderização caso não injetada (apenas para demo, na plataforma real usará a injetada)
+        if (firebaseConfigStr) {
+            try {
+                firebaseConfig = JSON.parse(firebaseConfigStr);
+            } catch (e) {
+                console.error("Erro ao parsear firebase config", e);
+            }
+        } else {
+             // Mock config para evitar erros se rodado fora do ambiente
+             console.warn("Configuração do Firebase não encontrada. Dados serão apenas locais (temporários).");
+        }
+
+        let app, db, auth;
+        let currentUser = null;
+        let isFirebaseInitialized = false;
+
+        // Inicialização do Firebase
+        try {
+            if(Object.keys(firebaseConfig).length > 0) {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                isFirebaseInitialized = true;
+            }
+        } catch (error) {
+            console.error("Erro ao inicializar Firebase:", error);
+        }
+
+        // Elementos da UI
+        const form = document.getElementById('agendamento-form');
+        const btnSubmit = document.getElementById('btn-submit');
+        const authStatus = document.getElementById('auth-status');
+        const tabelaCorpo = document.getElementById('tabela-corpo');
+        const emptyState = document.getElementById('empty-state');
+
+        // Navegação de Abas
+        window.switchTab = function(tabName) {
+            const viewRegistrar = document.getElementById('view-registrar');
+            const viewConsultas = document.getElementById('view-consultas');
+            const btnRegistrar = document.getElementById('tab-btn-registrar');
+            const btnConsultas = document.getElementById('tab-btn-consultas');
+
+            if (tabName === 'registrar') {
+                viewRegistrar.classList.remove('hidden-view');
+                viewConsultas.classList.add('hidden-view');
+                
+                btnRegistrar.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
+                btnConsultas.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
+            } else {
+                viewRegistrar.classList.add('hidden-view');
+                viewConsultas.classList.remove('hidden-view');
+                
+                btnConsultas.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
+                btnRegistrar.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
+            }
+        };
+
+        // Sistema de Notificação Customizado (Toast)
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const icon = type === 'success' 
+                ? `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
+                : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                
+            toast.className = `toast ${type === 'error' ? 'bg-red-500' : 'bg-valorem'}`;
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            // Fade in
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+            });
+
+            // Remover após 3 segundos
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // Autenticação e Configuração de Listeners
+        async function setupApp() {
+            if (!isFirebaseInitialized) {
+                // Modo offline/demo fallback
+                btnSubmit.disabled = false;
+                setupOfflineMode();
+                return;
+            }
+
+            authStatus.classList.remove('hidden');
+            authStatus.textContent = "Conectando ao banco de dados...";
+
+            try {
+                // Tenta logar com token customizado se existir, senão anonimamente
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                currentUser = auth.currentUser;
+                console.log("Usuário autenticado:", currentUser.uid);
+                
+                authStatus.classList.add('hidden');
+                btnSubmit.disabled = false;
+
+                // Configurar listener em tempo real após autenticação
+                setupRealtimeListener();
+
+            } catch (error) {
+                console.error("Erro na autenticação:", error);
+                authStatus.textContent = "Erro de conexão. Tente recarregar a página.";
+                authStatus.classList.add('text-red-500');
+            }
+        }
+
+        // Ouvinte de eventos em tempo real
+        let unsubscribe = null;
+        function setupRealtimeListener() {
+            if (!currentUser || !isFirebaseInitialized) return;
+
+            // REGRA 1 CRÍTICA: Caminho exato para dados públicos
+            const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'agendamentos');
+            
+            // REGRA 2 CRÍTICA: Sem orderby complexos na query, trazemos tudo e ordenamos na memória
+            unsubscribe = onSnapshot(collectionRef, 
+                (snapshot) => {
+                    const agendamentos = [];
+                    snapshot.forEach((doc) => {
+                        agendamentos.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    // Ordenar na memória: Mais recentes primeiro
+                    agendamentos.sort((a, b) => b.timestamp - a.timestamp);
+                    
+                    renderTable(agendamentos);
+                },
+                (error) => {
+                    console.error("Erro ao escutar dados:", error);
+                    tabelaCorpo.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Erro ao carregar dados.</td></tr>`;
+                }
+            );
+        }
+
+        // Formatação de Data
+        function formatarDataHora(timestamp) {
+            if (!timestamp) return '-';
+            const data = new Date(timestamp);
+            return data.toLocaleString('pt-BR', { 
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute:'2-digit'
+            });
+        }
+
+        // Renderização da Tabela
+        function renderTable(dados) {
+            tabelaCorpo.innerHTML = '';
+            
+            if (dados.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                
+                dados.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    // Cores alternadas para as linhas
+                    tr.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                    
+                    // Definir cor da badge baseada na operação
+                    let opColorClass = "bg-gray-100 text-gray-800";
+                    if(item.operacao === 'Carregamento') opColorClass = "bg-blue-100 text-blue-800";
+                    if(item.operacao === 'Descarga') opColorClass = "bg-valorem/20 text-valorem-dark";
+                    
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${formatarDataHora(item.timestamp)}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${opColorClass}">
+                                ${item.operacao}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${item.motorista}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 uppercase">
+                            ${item.placa}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${item.telefone || '-'}
+                        </td>
+                    `;
+                    tabelaCorpo.appendChild(tr);
+                });
+            }
+        }
+
+        // Submissão do Formulário
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const operacao = document.getElementById('operacao').value;
+            const motorista = document.getElementById('motorista').value;
+            const placa = document.getElementById('placa').value.toUpperCase();
+            const telefone = document.getElementById('telefone').value;
+
+            // Validação básica
+            if (!operacao || !motorista || !placa) {
+                showToast('Preencha os campos obrigatórios.', 'error');
+                return;
+            }
+
+            const novoAgendamento = {
+                operacao,
+                motorista,
+                placa,
+                telefone,
+                timestamp: Date.now(),
+                criadoPor: currentUser ? currentUser.uid : 'anonimo'
+            };
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Registrando...';
+
+            try {
+                if (isFirebaseInitialized && currentUser) {
+                    // REGRA 3: Guard operation
+                    const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'agendamentos');
+                    await addDoc(collectionRef, novoAgendamento);
+                } else {
+                    // Mock para ambiente sem firebase (apenas salva localmente na sessão)
+                    salvarMockLocal(novoAgendamento);
+                }
+                
+                form.reset();
+                showToast('Entrada registrada com sucesso!');
+                
+                // Mudar para a aba de consultas opcionalmente, ou deixar na mesma
+                // switchTab('consultas');
+
+            } catch (error) {
+                console.error("Erro ao salvar:", error);
+                showToast('Erro ao salvar registro.', 'error');
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = 'Registrar Entrada';
+            }
+        });
+
+        // Formatação de Placa automática (opcional, básico)
+        document.getElementById('placa').addEventListener('input', function(e) {
+            let v = e.target.value.toUpperCase();
+            // Permite digitar normal, aplica CSS text-transform para exibir
+        });
+
+        // Máscara básica para telefone
+        document.getElementById('telefone').addEventListener('input', function(e) {
+            let v = e.target.value.replace(/\D/g, ""); // Remove tudo que não é dígito
+            v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); 
+            v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+            e.target.value = v.substring(0, 15);
+        });
+
+        // Lógica Fallback para quando o Firebase não está disponível (Visualização no Immersive)
+        let mockData = [];
+        function setupOfflineMode() {
+            tabelaCorpo.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-gray-500">Modo de demonstração local ativo.</td></tr>`;
+            renderTable(mockData);
+        }
+
+        function salvarMockLocal(dado) {
+            mockData.unshift(dado); // Add no início
+            renderTable(mockData);
+        }
+
+        // Iniciar
+        setupApp();
+
+    </script>
+</body>
+</html>
