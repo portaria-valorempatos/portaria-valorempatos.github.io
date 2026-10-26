@@ -100,24 +100,30 @@
                 </div>
                 
                 <form id="agendamento-form" class="p-6 space-y-5">
-                    <!-- Operação -->
-                    <div>
-                        <label for="operacao" class="block text-sm font-medium text-gray-700 mb-1">Operação *</label>
-                        <select id="operacao" name="operacao" required class="w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
-                            <option value="" disabled selected>Selecione a operação</option>
-                            <option value="Carregamento">Carregamento</option>
-                            <option value="Descarga">Descarga</option>
-                            <option value="Outros">Outros</option>
-                        </select>
+                    <!-- Operação e Data da Operação -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="operacao" class="block text-sm font-medium text-gray-700 mb-1">Operação *</label>
+                            <select id="operacao" name="operacao" required class="w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                                <option value="" disabled selected>Selecione a operação</option>
+                                <option value="Carregamento">Carregamento</option>
+                                <option value="Descarga">Descarga</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="data_operacao" class="block text-sm font-medium text-gray-700 mb-1">Data da Operação *</label>
+                            <input type="date" id="data_operacao" name="data_operacao" required class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                        </div>
                     </div>
 
-                    <!-- Nome do Motorista com Datalist -->
-                    <div>
-                        <label for="motorista" class="block text-sm font-medium text-gray-700 mb-1">Nome do Motorista *</label>
-                        <input type="text" id="motorista" name="motorista" list="motoristas-list" required placeholder="Digite ou selecione o nome" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
-                        <datalist id="motoristas-list">
-                            <option value="ANGELO CESAR DE MAGALHÃES"></option>
-                            <option value="BRUNO HENRIQUE ALVES DE JESUS"></option>
+                    <!-- Nome do Motorista e Transportadora -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="motorista" class="block text-sm font-medium text-gray-700 mb-1">Nome do Motorista *</label>
+                            <input type="text" id="motorista" name="motorista" list="motoristas-list" required placeholder="Digite ou selecione o nome" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                            <datalist id="motoristas-list">
+                                <option value="ANGELO CESAR DE MAGALHÃES"></option>
                             <option value="CLAUDIO APARECIDO DE ARAUJO"></option>
                             <option value="DANIEL HENRIQUE DE SOUSA"></option>
                             <option value="DENILSON LAZARO CORREA"></option>
@@ -143,24 +149,28 @@
                             <option value="RICARDO JOSE DE SOUSA"></option>
                             <option value="RODRIGO DOS REIS VIEIRA"></option>
                             <option value="ROSEY MARQUES DE FREITAS"></option>
-                            <option value="TIAGO AUGUSTO SILVA"></option>
-                            <option value="VANDERLEI MARTINS RIBEIRO"></option>
-                            <option value="VINICIUS JOSE DA CUNHA SILVEIRA"></option>
-                            <option value="WANDERSON VINICIUS DE SOUSA MACHADO"></option>
-                            <option value="WELLINGTON WESLEY A. FERREIRA"></option>
-                            <option value="WELTON DA SILVA LEMOS"></option>
-                        </datalist>
+                                <option value="WELTON DA SILVA LEMOS"></option>
+                            </datalist>
+                        </div>
+                        <div>
+                            <label for="transportadora" class="block text-sm font-medium text-gray-700 mb-1">Transportadora *</label>
+                            <input type="text" id="transportadora" name="transportadora" required placeholder="Ex: G10 TRANSPORTES S.A" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                        </div>
                     </div>
 
-                    <!-- Placa e Telefone (Grid lado a lado em telas maiores) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <!-- Placas e Telefone -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                         <div>
-                            <label for="placa" class="block text-sm font-medium text-gray-700 mb-1">Placa *</label>
-                            <input type="text" id="placa" name="placa" required placeholder="Ex: ABC-1234" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase">
+                            <label for="placa_cavalo" class="block text-sm font-medium text-gray-700 mb-1">Placa Cavalo *</label>
+                            <input type="text" id="placa_cavalo" name="placa_cavalo" required placeholder="Ex: ABC-1234" maxlength="8" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase font-mono">
+                        </div>
+                        <div>
+                            <label for="placa_carreta" class="block text-sm font-medium text-gray-700 mb-1">Placa Carreta</label>
+                            <input type="text" id="placa_carreta" name="placa_carreta" placeholder="Ex: ABC-1234" maxlength="8" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase font-mono">
                         </div>
                         <div>
                             <label for="telefone" class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
-                            <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                            <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" maxlength="15" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
                         </div>
                     </div>
 
@@ -195,17 +205,20 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-100">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data/Hora</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Registro</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Operação</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operação</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Motorista</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transportadora</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa Cavalo</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa Carreta</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefone</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-corpo" class="bg-white divide-y divide-gray-200">
                             <!-- Linhas inseridas via JS -->
                             <tr>
-                                <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                                <td colspan="8" class="px-6 py-10 text-center text-gray-500">
                                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-valorem inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -380,12 +393,12 @@
                 },
                 (error) => {
                     console.error("Erro ao escutar dados:", error);
-                    tabelaCorpo.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Erro ao carregar dados.</td></tr>`;
+                    tabelaCorpo.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-red-500">Erro ao carregar dados.</td></tr>`;
                 }
             );
         }
 
-        // Formatação de Data
+        // Formatação de Data/Hora para a coluna "Data Registro"
         function formatarDataHora(timestamp) {
             if (!timestamp) return '-';
             const data = new Date(timestamp);
@@ -393,6 +406,14 @@
                 day: '2-digit', month: '2-digit', year: 'numeric',
                 hour: '2-digit', minute:'2-digit'
             });
+        }
+
+        // Formatação de Data Simples (YYYY-MM-DD para DD/MM/YYYY) para a "Data da Operação"
+        function formatarDataSimples(dataStr) {
+            if (!dataStr) return '-';
+            const partes = dataStr.split('-');
+            if (partes.length !== 3) return dataStr;
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
         // Renderização da Tabela
@@ -418,6 +439,9 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             ${formatarDataHora(item.timestamp)}
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                            ${formatarDataSimples(item.data_operacao)}
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${opColorClass}">
                                 ${item.operacao}
@@ -426,8 +450,14 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             ${item.motorista}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 uppercase">
-                            ${item.placa}
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${item.transportadora || '-'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 uppercase font-mono">
+                            ${item.placa_cavalo}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 uppercase font-mono">
+                            ${item.placa_carreta || '-'}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             ${item.telefone || '-'}
@@ -443,20 +473,26 @@
             e.preventDefault();
             
             const operacao = document.getElementById('operacao').value;
+            const data_operacao = document.getElementById('data_operacao').value;
             const motorista = document.getElementById('motorista').value;
-            const placa = document.getElementById('placa').value.toUpperCase();
+            const transportadora = document.getElementById('transportadora').value;
+            const placa_cavalo = document.getElementById('placa_cavalo').value.toUpperCase();
+            const placa_carreta = document.getElementById('placa_carreta').value.toUpperCase();
             const telefone = document.getElementById('telefone').value;
 
             // Validação básica
-            if (!operacao || !motorista || !placa) {
+            if (!operacao || !data_operacao || !motorista || !transportadora || !placa_cavalo) {
                 showToast('Preencha os campos obrigatórios.', 'error');
                 return;
             }
 
             const novoAgendamento = {
                 operacao,
+                data_operacao,
                 motorista,
-                placa,
+                transportadora,
+                placa_cavalo,
+                placa_carreta,
                 telefone,
                 timestamp: Date.now(),
                 criadoPor: currentUser ? currentUser.uid : 'anonimo'
@@ -490,11 +526,18 @@
             }
         });
 
-        // Formatação de Placa automática (opcional, básico)
-        document.getElementById('placa').addEventListener('input', function(e) {
-            let v = e.target.value.toUpperCase();
-            // Permite digitar normal, aplica CSS text-transform para exibir
-        });
+        // Formatação de Placas automática (padrão Brasil/Mercosul: ABC-1234 ou ABC-1D23)
+        function aplicarMascaraPlaca(e) {
+            let valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // Remove tudo que não é letra ou número
+            if (valor.length > 3) {
+                // Adiciona o hífen depois do 3º caractere
+                valor = valor.substring(0, 3) + '-' + valor.substring(3, 7);
+            }
+            e.target.value = valor;
+        }
+
+        document.getElementById('placa_cavalo').addEventListener('input', aplicarMascaraPlaca);
+        document.getElementById('placa_carreta').addEventListener('input', aplicarMascaraPlaca);
 
         // Máscara básica para telefone
         document.getElementById('telefone').addEventListener('input', function(e) {
@@ -507,7 +550,7 @@
         // Lógica Fallback para quando o Firebase não está disponível (Visualização no Immersive)
         let mockData = [];
         function setupOfflineMode() {
-            tabelaCorpo.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-gray-500">Modo de demonstração local ativo.</td></tr>`;
+            tabelaCorpo.innerHTML = `<tr><td colspan="8" class="px-6 py-10 text-center text-gray-500">Modo de demonstração local ativo.</td></tr>`;
             renderTable(mockData);
         }
 
