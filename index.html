@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valorem - Agendamento Portaria</title>
+    
+    <!-- Favicon adicionado conforme solicitado -->
+    <link rel="icon" type="image/png" href="valorem-simbolo-verde-transparente.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,7 +15,7 @@
                 extend: {
                     colors: {
                         valorem: {
-                            DEFAULT: '#00732E', // Cor aproximada do CMYK 96, 31, 100, 23
+                            DEFAULT: '#00732E', // Cor principal definida
                             light: '#00943c',
                             dark: '#005421'
                         }
@@ -24,28 +28,20 @@
         }
     </script>
     <style>
-        /* Estilos adicionais para garantir visual limpo */
         body {
             background-color: #f3f4f6;
             -webkit-font-smoothing: antialiased;
         }
-        
-        /* Ocultar elementos */
         .hidden-view {
             display: none;
         }
-
-        /* Animação suave para as abas */
         .tab-content {
             animation: fadeIn 0.3s ease-in-out;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Estilo para Toast (Notificações) */
         #toast-container {
             position: fixed;
             bottom: 20px;
@@ -70,10 +66,10 @@
 </head>
 <body class="text-gray-800">
 
-    <!-- Cabeçalho -->
+    <!-- Cabeçalho com Logo -->
     <header class="bg-white shadow-sm border-b-4 border-valorem">
         <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-center sm:justify-start items-center">
-            <img src="valorem-logotipo-horizontal-verde-com-slogan-transparente.png" alt="Valorem" style="max-height: 50px; object-fit: contain;">
+            <img src="valorem-logotipo-horizontal-verde-com-slogan-transparente.png" alt="Valorem" class="h-12 mx-auto sm:mx-0 object-contain">
         </div>
     </header>
 
@@ -124,37 +120,37 @@
                             <input type="text" id="motorista" name="motorista" list="motoristas-list" required placeholder="Digite ou selecione o nome" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
                             <datalist id="motoristas-list">
                                 <option value="ANGELO CESAR DE MAGALHÃES"></option>
-                            <option value="CLAUDIO APARECIDO DE ARAUJO"></option>
-                            <option value="DANIEL HENRIQUE DE SOUSA"></option>
-                            <option value="DENILSON LAZARO CORREA"></option>
-                            <option value="ECIO CRISTINO FERREIRA"></option>
-                            <option value="ERNANI EUSTAQUIO DE SOUSA"></option>
-                            <option value="FERNANDO DIVINO SILVESTRE"></option>
-                            <option value="JOAO BRAZ DE OLIVEIRA"></option>
-                            <option value="JOSE DOS REIS TEODORO"></option>
-                            <option value="JOSE VALDECIR CORREA"></option>
-                            <option value="JULIO CESAR DE OLIVEIRA"></option>
-                            <option value="KLEBER ADILSON LIUTI"></option>
-                            <option value="LINDOMAR MOREIRA DE LIMA"></option>
-                            <option value="MARCILIO NUNES GOMES"></option>
-                            <option value="MARCIO A. BATISTA PEREIRA"></option>
-                            <option value="MARCO TULIO DE MELO"></option>
-                            <option value="MAURINO DA SILVA CUSTODIO"></option>
-                            <option value="MAURO FRANCISCO PEREIRA"></option>
-                            <option value="MAX RICARDO PANTALEAO"></option>
-                            <option value="NATANIEL CICERO DA SILVA"></option>
-                            <option value="OSVANDO RODRIGUES ALVES"></option>
-                            <option value="RENIO JOSE PEREIRA"></option>
-                            <option value="RENIVALDO RENATO DE QUEIROZ"></option>
-                            <option value="RICARDO JOSE DE SOUSA"></option>
-                            <option value="RODRIGO DOS REIS VIEIRA"></option>
-                            <option value="ROSEY MARQUES DE FREITAS"></option>
+                                <option value="CLAUDIO APARECIDO DE ARAUJO"></option>
+                                <option value="DANIEL HENRIQUE DE SOUSA"></option>
+                                <option value="DENILSON LAZARO CORREA"></option>
+                                <option value="ECIO CRISTINO FERREIRA"></option>
+                                <option value="ERNANI EUSTAQUIO DE SOUSA"></option>
+                                <option value="FERNANDO DIVINO SILVESTRE"></option>
+                                <option value="JOAO BRAZ DE OLIVEIRA"></option>
+                                <option value="JOSE DOS REIS TEODORO"></option>
+                                <option value="JOSE VALDECIR CORREA"></option>
+                                <option value="JULIO CESAR DE OLIVEIRA"></option>
+                                <option value="KLEBER ADILSON LIUTI"></option>
+                                <option value="LINDOMAR MOREIRA DE LIMA"></option>
+                                <option value="MARCILIO NUNES GOMES"></option>
+                                <option value="MARCIO A. BATISTA PEREIRA"></option>
+                                <option value="MARCO TULIO DE MELO"></option>
+                                <option value="MAURINO DA SILVA CUSTODIO"></option>
+                                <option value="MAURO FRANCISCO PEREIRA"></option>
+                                <option value="MAX RICARDO PANTALEAO"></option>
+                                <option value="NATANIEL CICERO DA SILVA"></option>
+                                <option value="OSVANDO RODRIGUES ALVES"></option>
+                                <option value="RENIO JOSE PEREIRA"></option>
+                                <option value="RENIVALDO RENATO DE QUEIROZ"></option>
+                                <option value="RICARDO JOSE DE SOUSA"></option>
+                                <option value="RODRIGO DOS REIS VIEIRA"></option>
+                                <option value="ROSEY MARQUES DE FREITAS"></option>
                                 <option value="WELTON DA SILVA LEMOS"></option>
                             </datalist>
                         </div>
                         <div>
                             <label for="transportadora" class="block text-sm font-medium text-gray-700 mb-1">Transportadora *</label>
-                            <input type="text" id="transportadora" name="transportadora" required placeholder="Ex: G10 TRANSPORTES S.A" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
+                            <input type="text" id="transportadora" name="transportadora" required placeholder="Ex: G10 TRANSPORTES" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm">
                         </div>
                     </div>
 
@@ -162,6 +158,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                         <div>
                             <label for="placa_cavalo" class="block text-sm font-medium text-gray-700 mb-1">Placa Cavalo *</label>
+                            <!-- Máximo de 8 caracteres contando o hífen (Ex: ABC-1234) -->
                             <input type="text" id="placa_cavalo" name="placa_cavalo" required placeholder="Ex: ABC-1234" maxlength="8" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase font-mono">
                         </div>
                         <div>
@@ -189,6 +186,15 @@
 
         <!-- Seção: Consultas (Público) -->
         <section id="view-consultas" class="tab-content hidden-view">
+            
+            <!-- Botão para alternar visualização de dias anteriores -->
+            <div class="mb-4 flex justify-end">
+                <button id="btn-toggle-past" class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none bg-gray-200 text-gray-700 hover:bg-gray-300 flex items-center shadow-sm">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Mostrar dias anteriores
+                </button>
+            </div>
+
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
                     <h2 class="text-lg font-semibold text-gray-800">Registros Recentes</h2>
@@ -230,7 +236,7 @@
                     </table>
                 </div>
                 <div id="empty-state" class="hidden px-6 py-10 text-center text-gray-500">
-                    Nenhum registro encontrado.
+                    Nenhum registro encontrado para exibição.
                 </div>
             </div>
         </section>
@@ -240,10 +246,18 @@
     <!-- Container para Toasts -->
     <div id="toast-container"></div>
 
-    <!-- Lógica da Aplicação -->
+    <!-- 
+    ========================================================================
+    LÓGICA DA APLICAÇÃO E INTEGRAÇÃO FIREBASE 
+    ========================================================================
+    Aviso para implementação no seu ambiente pessoal: 
+    Este código utiliza a estrutura padrão de persistência. Se estiver 
+    configurando seu próprio Firebase fora deste ambiente, certifique-se
+    de inicializá-lo corretamente com suas credenciais de acesso ao Firestore.
+    -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Variáveis de ambiente fornecidas pela plataforma
@@ -251,23 +265,21 @@
         const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
         let firebaseConfig = {};
         
-        // Fallback config para permitir renderização caso não injetada (apenas para demo, na plataforma real usará a injetada)
         if (firebaseConfigStr) {
-            try {
-                firebaseConfig = JSON.parse(firebaseConfigStr);
-            } catch (e) {
-                console.error("Erro ao parsear firebase config", e);
-            }
+            try { firebaseConfig = JSON.parse(firebaseConfigStr); } 
+            catch (e) { console.error("Erro ao parsear firebase config", e); }
         } else {
-             // Mock config para evitar erros se rodado fora do ambiente
-             console.warn("Configuração do Firebase não encontrada. Dados serão apenas locais (temporários).");
+             console.warn("Configuração do Firebase não encontrada. Dados serão apenas locais.");
         }
 
         let app, db, auth;
         let currentUser = null;
         let isFirebaseInitialized = false;
 
-        // Inicialização do Firebase
+        // Estado local para armazenar dados e controlar exibição de dias anteriores
+        let todosRegistros = [];
+        let mostrarDiasAnteriores = false;
+
         try {
             if(Object.keys(firebaseConfig).length > 0) {
                 app = initializeApp(firebaseConfig);
@@ -279,14 +291,14 @@
             console.error("Erro ao inicializar Firebase:", error);
         }
 
-        // Elementos da UI
         const form = document.getElementById('agendamento-form');
         const btnSubmit = document.getElementById('btn-submit');
         const authStatus = document.getElementById('auth-status');
         const tabelaCorpo = document.getElementById('tabela-corpo');
         const emptyState = document.getElementById('empty-state');
+        const btnTogglePast = document.getElementById('btn-toggle-past');
 
-        // Navegação de Abas
+        // Alternância entre abas
         window.switchTab = function(tabName) {
             const viewRegistrar = document.getElementById('view-registrar');
             const viewConsultas = document.getElementById('view-consultas');
@@ -296,19 +308,37 @@
             if (tabName === 'registrar') {
                 viewRegistrar.classList.remove('hidden-view');
                 viewConsultas.classList.add('hidden-view');
-                
                 btnRegistrar.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
                 btnConsultas.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
             } else {
                 viewRegistrar.classList.add('hidden-view');
                 viewConsultas.classList.remove('hidden-view');
-                
                 btnConsultas.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
                 btnRegistrar.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
             }
         };
 
-        // Sistema de Notificação Customizado (Toast)
+        // Lógica do botão de alternância de dias anteriores
+        btnTogglePast.addEventListener('click', () => {
+            mostrarDiasAnteriores = !mostrarDiasAnteriores;
+            
+            // Alterar estilo do botão para mostrar se está ativo ou não
+            if (mostrarDiasAnteriores) {
+                btnTogglePast.innerHTML = '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg> Ocultar dias anteriores';
+                btnTogglePast.classList.replace('bg-gray-200', 'bg-valorem');
+                btnTogglePast.classList.replace('text-gray-700', 'text-white');
+                btnTogglePast.classList.replace('hover:bg-gray-300', 'hover:bg-valorem-dark');
+            } else {
+                btnTogglePast.innerHTML = '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Mostrar dias anteriores';
+                btnTogglePast.classList.replace('bg-valorem', 'bg-gray-200');
+                btnTogglePast.classList.replace('text-white', 'text-gray-700');
+                btnTogglePast.classList.replace('hover:bg-valorem-dark', 'hover:bg-gray-300');
+            }
+
+            // Re-renderizar tabela com a nova configuração de filtro
+            renderTable(todosRegistros);
+        });
+
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -321,33 +351,23 @@
             toast.innerHTML = `${icon} <span>${message}</span>`;
             
             container.appendChild(toast);
-            
-            // Fade in
-            requestAnimationFrame(() => {
-                toast.style.opacity = '1';
-            });
-
-            // Remover após 3 segundos
+            requestAnimationFrame(() => { toast.style.opacity = '1'; });
             setTimeout(() => {
                 toast.style.opacity = '0';
                 setTimeout(() => toast.remove(), 500);
             }, 3000);
         }
 
-        // Autenticação e Configuração de Listeners
         async function setupApp() {
             if (!isFirebaseInitialized) {
-                // Modo offline/demo fallback
                 btnSubmit.disabled = false;
                 setupOfflineMode();
                 return;
             }
-
             authStatus.classList.remove('hidden');
             authStatus.textContent = "Conectando ao banco de dados...";
 
             try {
-                // Tenta logar com token customizado se existir, senão anonimamente
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
@@ -355,14 +375,9 @@
                 }
                 
                 currentUser = auth.currentUser;
-                console.log("Usuário autenticado:", currentUser.uid);
-                
                 authStatus.classList.add('hidden');
                 btnSubmit.disabled = false;
-
-                // Configurar listener em tempo real após autenticação
                 setupRealtimeListener();
-
             } catch (error) {
                 console.error("Erro na autenticação:", error);
                 authStatus.textContent = "Erro de conexão. Tente recarregar a página.";
@@ -370,26 +385,23 @@
             }
         }
 
-        // Ouvinte de eventos em tempo real
-        let unsubscribe = null;
         function setupRealtimeListener() {
             if (!currentUser || !isFirebaseInitialized) return;
 
-            // REGRA 1 CRÍTICA: Caminho exato para dados públicos
             const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'agendamentos');
             
-            // REGRA 2 CRÍTICA: Sem orderby complexos na query, trazemos tudo e ordenamos na memória
-            unsubscribe = onSnapshot(collectionRef, 
+            // onSnapshot garante que os dados atualizam em tempo real e mantem na tela ao recarregar a página
+            onSnapshot(collectionRef, 
                 (snapshot) => {
-                    const agendamentos = [];
+                    todosRegistros = [];
                     snapshot.forEach((doc) => {
-                        agendamentos.push({ id: doc.id, ...doc.data() });
+                        todosRegistros.push({ id: doc.id, ...doc.data() });
                     });
                     
-                    // Ordenar na memória: Mais recentes primeiro
-                    agendamentos.sort((a, b) => b.timestamp - a.timestamp);
+                    // Ordenar por ordem de agendamento (mais recentes primeiro)
+                    todosRegistros.sort((a, b) => b.timestamp - a.timestamp);
                     
-                    renderTable(agendamentos);
+                    renderTable(todosRegistros);
                 },
                 (error) => {
                     console.error("Erro ao escutar dados:", error);
@@ -398,7 +410,6 @@
             );
         }
 
-        // Formatação de Data/Hora para a coluna "Data Registro"
         function formatarDataHora(timestamp) {
             if (!timestamp) return '-';
             const data = new Date(timestamp);
@@ -408,7 +419,6 @@
             });
         }
 
-        // Formatação de Data Simples (YYYY-MM-DD para DD/MM/YYYY) para a "Data da Operação"
         function formatarDataSimples(dataStr) {
             if (!dataStr) return '-';
             const partes = dataStr.split('-');
@@ -416,59 +426,54 @@
             return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
-        // Renderização da Tabela
+        // Obtém a data local de hoje no formato YYYY-MM-DD
+        function obterDataLocalHoje() {
+            const data = new Date();
+            const offset = data.getTimezoneOffset();
+            const dataLocal = new Date(data.getTime() - (offset * 60 * 1000));
+            return dataLocal.toISOString().split('T')[0];
+        }
+
         function renderTable(dados) {
             tabelaCorpo.innerHTML = '';
             
-            if (dados.length === 0) {
+            const hojeStr = obterDataLocalHoje();
+
+            // Filtrar dados baseados no toggle
+            const dadosFiltrados = dados.filter(item => {
+                if (mostrarDiasAnteriores) return true; // Mostra todos se toggle ativado
+                // Se toggle desativado, mostra apenas se data da operação for HOJE ou FUTURO
+                return item.data_operacao >= hojeStr;
+            });
+            
+            if (dadosFiltrados.length === 0) {
                 emptyState.classList.remove('hidden');
             } else {
                 emptyState.classList.add('hidden');
                 
-                dados.forEach((item, index) => {
+                dadosFiltrados.forEach((item, index) => {
                     const tr = document.createElement('tr');
-                    // Cores alternadas para as linhas
                     tr.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
                     
-                    // Definir cor da badge baseada na operação
                     let opColorClass = "bg-gray-100 text-gray-800";
                     if(item.operacao === 'Carregamento') opColorClass = "bg-blue-100 text-blue-800";
                     if(item.operacao === 'Descarga') opColorClass = "bg-valorem/20 text-valorem-dark";
                     
                     tr.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${formatarDataHora(item.timestamp)}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                            ${formatarDataSimples(item.data_operacao)}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${opColorClass}">
-                                ${item.operacao}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            ${item.motorista}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${item.transportadora || '-'}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 uppercase font-mono">
-                            ${item.placa_cavalo}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 uppercase font-mono">
-                            ${item.placa_carreta || '-'}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${item.telefone || '-'}
-                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatarDataHora(item.timestamp)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${formatarDataSimples(item.data_operacao)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${opColorClass}">${item.operacao}</span></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.motorista}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.transportadora || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 uppercase font-mono">${item.placa_cavalo}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 uppercase font-mono">${item.placa_carreta || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.telefone || '-'}</td>
                     `;
                     tabelaCorpo.appendChild(tr);
                 });
             }
         }
 
-        // Submissão do Formulário
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -480,7 +485,6 @@
             const placa_carreta = document.getElementById('placa_carreta').value.toUpperCase();
             const telefone = document.getElementById('telefone').value;
 
-            // Validação básica
             if (!operacao || !data_operacao || !motorista || !transportadora || !placa_cavalo) {
                 showToast('Preencha os campos obrigatórios.', 'error');
                 return;
@@ -494,7 +498,7 @@
                 placa_cavalo,
                 placa_carreta,
                 telefone,
-                timestamp: Date.now(),
+                timestamp: Date.now(), // Grava timestamp do exato momento
                 criadoPor: currentUser ? currentUser.uid : 'anonimo'
             };
 
@@ -503,19 +507,14 @@
 
             try {
                 if (isFirebaseInitialized && currentUser) {
-                    // REGRA 3: Guard operation
                     const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'agendamentos');
                     await addDoc(collectionRef, novoAgendamento);
                 } else {
-                    // Mock para ambiente sem firebase (apenas salva localmente na sessão)
                     salvarMockLocal(novoAgendamento);
                 }
                 
                 form.reset();
                 showToast('Entrada registrada com sucesso!');
-                
-                // Mudar para a aba de consultas opcionalmente, ou deixar na mesma
-                // switchTab('consultas');
 
             } catch (error) {
                 console.error("Erro ao salvar:", error);
@@ -526,11 +525,11 @@
             }
         });
 
-        // Formatação de Placas automática (padrão Brasil/Mercosul: ABC-1234 ou ABC-1D23)
+        // Formatação Automática de Placas
         function aplicarMascaraPlaca(e) {
-            let valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // Remove tudo que não é letra ou número
+            let valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // Somente alfanuméricos
             if (valor.length > 3) {
-                // Adiciona o hífen depois do 3º caractere
+                // Inserir o hífen obrigatoriamente após a 3ª letra
                 valor = valor.substring(0, 3) + '-' + valor.substring(3, 7);
             }
             e.target.value = valor;
@@ -539,29 +538,25 @@
         document.getElementById('placa_cavalo').addEventListener('input', aplicarMascaraPlaca);
         document.getElementById('placa_carreta').addEventListener('input', aplicarMascaraPlaca);
 
-        // Máscara básica para telefone
+        // Máscara de Telefone BR
         document.getElementById('telefone').addEventListener('input', function(e) {
-            let v = e.target.value.replace(/\D/g, ""); // Remove tudo que não é dígito
+            let v = e.target.value.replace(/\D/g, "");
             v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); 
             v = v.replace(/(\d)(\d{4})$/, "$1-$2");
             e.target.value = v.substring(0, 15);
         });
 
-        // Lógica Fallback para quando o Firebase não está disponível (Visualização no Immersive)
-        let mockData = [];
         function setupOfflineMode() {
             tabelaCorpo.innerHTML = `<tr><td colspan="8" class="px-6 py-10 text-center text-gray-500">Modo de demonstração local ativo.</td></tr>`;
-            renderTable(mockData);
+            renderTable(todosRegistros);
         }
 
         function salvarMockLocal(dado) {
-            mockData.unshift(dado); // Add no início
-            renderTable(mockData);
+            todosRegistros.unshift(dado);
+            renderTable(todosRegistros);
         }
 
-        // Iniciar
         setupApp();
-
     </script>
 </body>
 </html>
