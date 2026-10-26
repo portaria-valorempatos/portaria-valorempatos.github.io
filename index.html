@@ -199,9 +199,7 @@
 
     <!-- Script de Funcionalidades -->
     <script>
-        // Definir a data de hoje por padrão no campo de data da operação
         document.getElementById('data-operacao').valueAsDate = new Date();
-
         let mostrarAntigos = false;
 
         function switchTab(tab) {
@@ -224,7 +222,6 @@
             }
         }
 
-        // Máscaras automáticas
         function formatarPlaca(input) {
             let v = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
             if (v.length > 3) {
@@ -256,7 +253,6 @@
             }, 3500);
         }
 
-        // Sistema de Persistência Local com Sincronização entre abas
         function salvarAgendamento(e) {
             e.preventDefault();
 
@@ -281,14 +277,13 @@
             };
 
             let registros = JSON.parse(localStorage.getItem('valorem_registros') || '[]');
-            registros.unshift(novoRegistro); // Adiciona no início (mais recente primeiro)
+            registros.unshift(novoRegistro);
             localStorage.setItem('valorem_registros', JSON.stringify(registros));
 
             mostrarToast('Agendamento registrado com sucesso!');
             document.getElementById('form-agendamento').reset();
             document.getElementById('data-operacao').valueAsDate = new Date();
             
-            // Alterna para a aba de consultas automaticamente
             switchTab('consultas');
         }
 
@@ -334,11 +329,6 @@
                 </tr>
             `).join('');
         }
-
-        // Carrega os dados caso o usuário abra direto na aba de consultas
-        window.addEventListener('storage', () => {
-            carregarRegistros();
-        });
     </script>
 </body>
 </html>
