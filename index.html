@@ -23,6 +23,9 @@
             }
         }
     </script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
@@ -31,7 +34,10 @@
         <div class="flex items-center space-x-3">
             <img src="valorem-logotipo-horizontal-verde-com-slogan-transparente.png" alt="Valorem Logotipo" class="h-10 object-contain">
         </div>
-        <div class="text-xs text-slate-400 font-medium hidden sm:block">Controle de Portaria & Agendamentos</div>
+        <div class="flex items-center space-x-3">
+            <span id="status-conexao" class="text-xs px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-800">Conectando ao Banco...</span>
+            <div class="text-xs text-slate-400 font-medium hidden sm:block">Controle de Portaria & Agendamentos</div>
+        </div>
     </header>
 
     <!-- Conteúdo Principal -->
@@ -178,7 +184,7 @@
                             </tr>
                         </thead>
                         <tbody id="tabela-registros" class="divide-y divide-slate-100 text-sm text-slate-700">
-                            <!-- Preenchido via JavaScript -->
+                            <tr><td colspan="8" class="text-center p-8 text-slate-400 font-medium">Carregando registros...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -197,10 +203,44 @@
         <span id="toast-msg">Mensagem</span>
     </div>
 
-    <!-- Script de Funcionalidades -->
+    <!-- Script do Firebase e Aplicação -->
     <script>
-        document.getElementById('data-operacao').valueAsDate = new Date();
+        // CONFIGURAÇÃO DO FIREBASE (Gratuito)
+        // Substitua abaixo com as credenciais do seu projeto Firebase (Console do Firebase > Configurações do Projeto > Web App)
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY_AQUI",
+            authDomain: "seu-projeto.firebaseapp.com",
+            projectId: "seu-projeto-id",
+            storageBucket: "seu-projeto.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcde"
+        };
+
+        let db;
+        let registrosCache = [];
         let mostrarAntigos = false;
+
+        // Inicializar Firebase
+        try {
+            if (firebaseConfig.apiKey !== "SUA_API_KEY_AQUI") {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                document.getElementById('status-conexao').innerText = "Online (Sincronizado)";
+                document.getElementById('status-conexao').className = "text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-800";
+                ouvirRegistrosEmTempoReal();
+            } else {
+                // Modo demonstração/temporário local caso não tenha configurado as chaves ainda
+                document.getElementById('status-conexao').innerText = "Modo Local (Configure o Firebase)";
+                document.getElementById('status-conexao').className = "text-xs px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-800";
+                carregarRegistrosLocal();
+            }
+        } catch (err) {
+            console.error("Erro ao iniciar Firebase:", err);
+            document.getElementById('status-conexao').innerText = "Erro Conexão";
+            document.getElementById('status-conexao').className = "text-xs px-2.5 py-1 rounded-full font-medium bg-red-100 text-red-800";
+        }
+
+        document.getElementById('data-operacao').valueAsDate = new Date();
 
         function switchTab(tab) {
             const btnReg = document.getElementById('tab-registrar');
@@ -218,7 +258,7 @@
                 btnReg.className = "px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
                 secCon.classList.remove('hidden');
                 secReg.classList.add('hidden');
-                carregarRegistros();
+                renderizarTabela();
             }
         }
 
@@ -253,7 +293,7 @@
             }, 3500);
         }
 
-        function salvarAgendamento(e) {
+        async function salvarAgendamento(e) {
             e.preventDefault();
 
             const agora = new Date();
@@ -264,7 +304,7 @@
             const dataOperacaoFmt = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
 
             const novoRegistro = {
-                id: Date.now(),
+                timestamp: Date.now(),
                 dataRegistro: dataRegistro,
                 dataOperacaoISO: dataOpRaw,
                 dataOperacao: dataOperacaoFmt,
@@ -276,15 +316,45 @@
                 telefone: document.getElementById('telefone').value || '-'
             };
 
-            let registros = JSON.parse(localStorage.getItem('valorem_registros') || '[]');
-            registros.unshift(novoRegistro);
-            localStorage.setItem('valorem_registros', JSON.stringify(registros));
+            if (db) {
+                try {
+                    await db.collection("agendamentos").add(novoRegistro);
+                    mostrarToast('Agendamento registrado com sucesso!');
+                    document.getElementById('form-agendamento').reset();
+                    document.getElementById('data-operacao').valueAsDate = new Date();
+                    switchTab('consultas');
+                } catch (err) {
+                    console.error("Erro ao salvar no Firestore:", err);
+                    mostrarToast('Erro ao gravar no banco. Verifique as regras do Firestore.', true);
+                }
+            } else {
+                // Fallback local se o Firebase não estiver configurado
+                let registros = JSON.parse(localStorage.getItem('valorem_registros') || '[]');
+                registros.unshift(novoRegistro);
+                localStorage.setItem('valorem_registros', JSON.stringify(registros));
+                mostrarToast('Registrado localmente (Configure o Firebase para nuvem)!');
+                document.getElementById('form-agendamento').reset();
+                document.getElementById('data-operacao').valueAsDate = new Date();
+                carregarRegistrosLocal();
+                switchTab('consultas');
+            }
+        }
 
-            mostrarToast('Agendamento registrado com sucesso!');
-            document.getElementById('form-agendamento').reset();
-            document.getElementById('data-operacao').valueAsDate = new Date();
-            
-            switchTab('consultas');
+        function ouvirRegistrosEmTempoReal() {
+            db.collection("agendamentos").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+                registrosCache = [];
+                snapshot.forEach((doc) => {
+                    registrosCache.push({ id: doc.id, ...doc.data() });
+                });
+                renderizarTabela();
+            }, (error) => {
+                console.error("Erro na escuta em tempo real:", error);
+            });
+        }
+
+        function carregarRegistrosLocal() {
+            registrosCache = JSON.parse(localStorage.getItem('valorem_registros') || '[]');
+            renderizarTabela();
         }
 
         function alternarDiasAnteriores() {
@@ -297,16 +367,14 @@
                 btn.innerHTML = '<span>🕒 Mostrar dias anteriores</span>';
                 btn.className = "bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5";
             }
-            carregarRegistros();
+            renderizarTabela();
         }
 
-        function carregarRegistros() {
+        function renderizarTabela() {
             const tbody = document.getElementById('tabela-registros');
-            const registros = JSON.parse(localStorage.getItem('valorem_registros') || '[]');
-            
             const hojeISO = new Date().toISOString().split('T')[0];
 
-            const filtrados = registros.filter(r => {
+            const filtrados = registrosCache.filter(r => {
                 if (mostrarAntigos) return true;
                 return r.dataOperacaoISO >= hojeISO;
             });
