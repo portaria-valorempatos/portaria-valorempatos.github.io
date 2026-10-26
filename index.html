@@ -23,9 +23,10 @@
             }
         }
     </script>
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (Compat Version) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
@@ -203,17 +204,17 @@
         <span id="toast-msg">Mensagem</span>
     </div>
 
-    <!-- Script do Firebase e Aplicação -->
+    <!-- Script de Configuração e Lógica -->
     <script>
-        // CONFIGURAÇÃO DO FIREBASE (Gratuito)
-        // Substitua abaixo com as credenciais do seu projeto Firebase (Console do Firebase > Configurações do Projeto > Web App)
+        // Configuração oficial do Firebase
         const firebaseConfig = {
-            apiKey: "SUA_API_KEY_AQUI",
-            authDomain: "seu-projeto.firebaseapp.com",
-            projectId: "seu-projeto-id",
-            storageBucket: "seu-projeto.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcde"
+            apiKey: "AIzaSyAc2Ff8cm2Kz9hasPw60QrOwidE923ODWQ",
+            authDomain: "portaria-valorempatos.firebaseapp.com",
+            projectId: "portaria-valorempatos",
+            storageBucket: "portaria-valorempatos.firebasestorage.app",
+            messagingSenderId: "1049653344467",
+            appId: "1:1049653344467:web:35f2be3885f18463953c26",
+            measurementId: "G-PM9Q0CH3BP"
         };
 
         let db;
@@ -222,18 +223,12 @@
 
         // Inicializar Firebase
         try {
-            if (firebaseConfig.apiKey !== "SUA_API_KEY_AQUI") {
-                firebase.initializeApp(firebaseConfig);
-                db = firebase.firestore();
-                document.getElementById('status-conexao').innerText = "Online (Sincronizado)";
-                document.getElementById('status-conexao').className = "text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-800";
-                ouvirRegistrosEmTempoReal();
-            } else {
-                // Modo demonstração/temporário local caso não tenha configurado as chaves ainda
-                document.getElementById('status-conexao').innerText = "Modo Local (Configure o Firebase)";
-                document.getElementById('status-conexao').className = "text-xs px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-800";
-                carregarRegistrosLocal();
-            }
+            firebase.initializeApp(firebaseConfig);
+            firebase.analytics();
+            db = firebase.firestore();
+            document.getElementById('status-conexao').innerText = "Online (Sincronizado)";
+            document.getElementById('status-conexao').className = "text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-800";
+            ouvirRegistrosEmTempoReal();
         } catch (err) {
             console.error("Erro ao iniciar Firebase:", err);
             document.getElementById('status-conexao').innerText = "Erro Conexão";
@@ -328,15 +323,7 @@
                     mostrarToast('Erro ao gravar no banco. Verifique as regras do Firestore.', true);
                 }
             } else {
-                // Fallback local se o Firebase não estiver configurado
-                let registros = JSON.parse(localStorage.getItem('valorem_registros') || '[]');
-                registros.unshift(novoRegistro);
-                localStorage.setItem('valorem_registros', JSON.stringify(registros));
-                mostrarToast('Registrado localmente (Configure o Firebase para nuvem)!');
-                document.getElementById('form-agendamento').reset();
-                document.getElementById('data-operacao').valueAsDate = new Date();
-                carregarRegistrosLocal();
-                switchTab('consultas');
+                mostrarToast('Banco de dados não conectado.', true);
             }
         }
 
@@ -350,11 +337,6 @@
             }, (error) => {
                 console.error("Erro na escuta em tempo real:", error);
             });
-        }
-
-        function carregarRegistrosLocal() {
-            registrosCache = JSON.parse(localStorage.getItem('valorem_registros') || '[]');
-            renderizarTabela();
         }
 
         function alternarDiasAnteriores() {
