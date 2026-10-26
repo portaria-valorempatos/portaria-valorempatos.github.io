@@ -64,7 +64,7 @@
             font-weight: 500;
         }
         .toast.error {
-            background-color: #ef4444; /* Vermelho para erro */
+            background-color: #ef4444;
         }
     </style>
 </head>
@@ -122,6 +122,7 @@
                             <input type="text" id="motorista" list="motoristas-list" required placeholder="Digite ou selecione" class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-valorem focus:border-valorem sm:text-sm uppercase">
                             <datalist id="motoristas-list">
                                 <option value="ANGELO CESAR DE MAGALHÃES"></option>
+                                <option value="BRUNO HENRIQUE ALVES DE JESUS"></option>
                                 <option value="CLAUDIO APARECIDO DE ARAUJO"></option>
                                 <option value="DANIEL HENRIQUE DE SOUSA"></option>
                                 <option value="DENILSON LAZARO CORREA"></option>
@@ -147,6 +148,11 @@
                                 <option value="RICARDO JOSE DE SOUSA"></option>
                                 <option value="RODRIGO DOS REIS VIEIRA"></option>
                                 <option value="ROSEY MARQUES DE FREITAS"></option>
+                                <option value="TIAGO AUGUSTO SILVA"></option>
+                                <option value="VANDERLEI MARTINS RIBEIRO"></option>
+                                <option value="VINICIUS JOSE DA SCUNHA SILVEIRA"></option>
+                                <option value="WANDERSON VINICIUS DE SOUSA MACHADO"></option>
+                                <option value="WELLINGTON WESLEY A. FERREIRA"></option>
                                 <option value="WELTON DA SILVA LEMOS"></option>
                             </datalist>
                         </div>
@@ -194,8 +200,8 @@
                     <h2 class="text-lg font-semibold text-gray-800">Registros Recentes</h2>
                     <div class="text-sm text-gray-500 flex items-center" id="status-sincronizacao">
                         <span class="relative flex h-3 w-3 mr-2">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-3 w-3 bg-valorem"></span>
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-3 w-3 bg-yellow-500"></span>
                         </span>
                         Conectando...
                     </div>
@@ -218,7 +224,7 @@
                         <tbody id="tabela-corpo" class="bg-white divide-y divide-gray-200">
                             <tr>
                                 <td colspan="8" class="px-6 py-10 text-center text-gray-500">
-                                    Aguardando conexão com o banco de dados...
+                                    Aguardando dados...
                                 </td>
                             </tr>
                         </tbody>
@@ -237,28 +243,47 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         // ==============================================================================
-        // ⚠️ ATENÇÃO: CONFIGURAÇÃO DO FIREBASE NECESSÁRIA! ⚠️
+        // Lógica Híbrida de Configuração (Funciona aqui e no seu Github)
         // ==============================================================================
-        // Para que o banco de dados grave de verdade no seu GitHub Pages, você PRECISA:
-        // 1. Ir em https://console.firebase.google.com/
-        // 2. Criar um projeto e adicionar um aplicativo Web (</>)
-        // 3. Criar um banco de dados "Firestore Database" (iniciar em modo de teste)
-        // 4. Copiar as chaves geradas e colar exatamente aqui abaixo:
-        // ==============================================================================
+        let firebaseConfig;
+        const isPreviewEnvironment = typeof __firebase_config !== 'undefined';
         
-        const firebaseConfig = {
-            apiKey: "COLE_SUA_API_KEY_AQUI",
-            authDomain: "COLE_SEU_AUTH_DOMAIN_AQUI",
-            projectId: "COLE_SEU_PROJECT_ID_AQUI",
-            storageBucket: "COLE_SEU_STORAGE_BUCKET_AQUI",
-            messagingSenderId: "COLE_SEU_MESSAGING_SENDER_ID_AQUI",
-            appId: "COLE_SEU_APP_ID_AQUI"
-        };
-        // ==============================================================================
+        if (isPreviewEnvironment) {
+            // Se estivermos dentro da plataforma de testes, usa as chaves injetadas automaticamente
+            firebaseConfig = JSON.parse(__firebase_config);
+        } else {
+            // ⚠️ ATENÇÃO: Quando você hospedar no SEU GITHUB, o código usará este bloco abaixo!
+            // Substitua essas chaves falsas pelas chaves reais do seu projeto no Firebase Console
+            firebaseConfig = {
+                apiKey: "COLE_AQUI_SUA_API_KEY",
+                authDomain: "COLE_AQUI_SEU_AUTH_DOMAIN",
+                projectId: "COLE_AQUI_SEU_PROJECT_ID",
+                storageBucket: "COLE_AQUI_SEU_STORAGE_BUCKET",
+                messagingSenderId: "COLE_AQUI_SEU_MESSAGING_SENDER_ID",
+                appId: "COLE_AQUI_SEU_APP_ID"
+            };
+        }
 
-        let app, db;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Identificador do App e caminho correto para salvar os dados
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'portaria-valorem';
+        
+        function getCollectionRef() {
+            if (isPreviewEnvironment) {
+                // Caminho rigoroso exigido no ambiente de preview
+                return collection(db, 'artifacts', appId, 'public', 'data', 'agendamentos');
+            } else {
+                // Caminho mais simples para quando estiver hospedado no Github
+                return collection(db, 'agendamentos');
+            }
+        }
+
         let todosRegistros = [];
         let mostrarDiasAnteriores = false;
 
@@ -269,7 +294,6 @@
         const btnTogglePast = document.getElementById('btn-toggle-past');
         const statusSincronizacao = document.getElementById('status-sincronizacao');
 
-        // Função para substituir o alert nativo por uma notificação mais amigável
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -289,53 +313,39 @@
             }, type === 'error' ? 6000 : 3000);
         }
 
-        // Inicialização do Firebase com Try/Catch para capturar se as chaves estão vazias
-        try {
-            if (firebaseConfig.apiKey === "COLE_SUA_API_KEY_AQUI") {
-                throw new Error("Chaves do Firebase não configuradas.");
+        // Função principal de inicialização (com Autenticação exigida pela Regra 3)
+        async function initDatabase() {
+            try {
+                if (!isPreviewEnvironment && firebaseConfig.apiKey.includes("COLE_AQUI")) {
+                    throw new Error("Necessário configurar Firebase para uso externo no Github.");
+                }
+
+                // Autenticação anônima ou customizada
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                statusSincronizacao.innerHTML = `
+                    <span class="relative flex h-3 w-3 mr-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-valorem"></span>
+                    </span> Sincronizado ao vivo
+                `;
+                
+                setupRealtimeListener();
+
+            } catch (error) {
+                console.error("Erro ao inicializar Firebase:", error);
+                statusSincronizacao.innerHTML = `<span class="text-red-500 font-bold text-xs">Aviso: Firebase não configurado</span>`;
+                tabelaCorpo.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-red-500 font-medium text-sm">O banco de dados de testes está indisponível. Para uso no GitHub, insira as chaves reais no código fonte.</td></tr>`;
+                showToast("Para usar no seu Github, você precisará editar o arquivo HTML e colar as suas chaves do Firebase.", "error");
             }
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            setupRealtimeListener();
-            
-            statusSincronizacao.innerHTML = `
-                <span class="relative flex h-3 w-3 mr-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-valorem"></span>
-                </span> Sincronizado ao vivo
-            `;
-        } catch (error) {
-            console.error("Erro ao inicializar Firebase:", error);
-            
-            statusSincronizacao.innerHTML = `<span class="text-red-500 font-bold">Desconectado (Falta Configuração)</span>`;
-            tabelaCorpo.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-red-500 font-medium">Erro: Banco de dados não configurado. Verifique o código fonte.</td></tr>`;
-            
-            // Exibe o "alert" em formato de toast conforme solicitado
-            setTimeout(() => {
-                showToast("Erro ao gravar no banco! Verifique se você preencheu as chaves do Firebase e habilitou o Firestore.", "error");
-            }, 1000);
         }
 
-        // Alternância entre abas
-        window.switchTab = function(tabName) {
-            document.getElementById('view-registrar').classList.toggle('hidden-view', tabName !== 'registrar');
-            document.getElementById('view-consultas').classList.toggle('hidden-view', tabName !== 'consultas');
-            
-            const btnReg = document.getElementById('tab-btn-registrar');
-            const btnCon = document.getElementById('tab-btn-consultas');
-            
-            if (tabName === 'registrar') {
-                btnReg.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
-                btnCon.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
-            } else {
-                btnCon.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
-                btnReg.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
-            }
-        };
-
-        // Escuta em tempo real do banco de dados
         function setupRealtimeListener() {
-            const collectionRef = collection(db, 'agendamentos');
+            const collectionRef = getCollectionRef();
             
             onSnapshot(collectionRef, 
                 (snapshot) => {
@@ -350,18 +360,16 @@
                 },
                 (error) => {
                     console.error("Erro no onSnapshot:", error);
-                    showToast("Erro ao ler dados do banco. Verifique as permissões do Firestore.", "error");
+                    showToast("Erro ao ler dados em tempo real.", "error");
                 }
             );
         }
 
-        // Lógica de envio do formulário (Salvar)
+        // Lógica de envio do formulário
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Pega a data e hora do exato momento
             const agora = new Date();
-            
             const novoAgendamento = {
                 operacao: document.getElementById('operacao').value,
                 data_operacao: document.getElementById('data_operacao').value,
@@ -381,25 +389,21 @@
             btnSubmit.innerHTML = 'Gravando...';
 
             try {
-                // Tenta salvar na coleção 'agendamentos'
-                const collectionRef = collection(db, 'agendamentos');
+                if (!auth.currentUser) throw new Error("Usuário não autenticado");
+                const collectionRef = getCollectionRef();
                 await addDoc(collectionRef, novoAgendamento);
                 
-                // Sucesso
                 form.reset();
-                showToast('Agendamento salvo com sucesso no banco de dados!');
-                
+                showToast('Agendamento salvo com sucesso!');
             } catch (error) {
-                // Falha
                 console.error("Erro ao gravar:", error);
-                showToast("Erro ao gravar no banco! Verifique se você preencheu as chaves do Firebase e habilitou o Firestore.", "error");
+                showToast("Erro ao salvar! Verifique a configuração do banco de dados.", "error");
             } finally {
                 btnSubmit.disabled = false;
                 btnSubmit.innerHTML = 'Registrar Entrada';
             }
         });
 
-        // Formatação de data simples YYYY-MM-DD para DD/MM/YYYY
         function formatarDataSimples(dataStr) {
             if (!dataStr) return '-';
             const partes = dataStr.split('-');
@@ -407,7 +411,6 @@
             return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
-        // Obtém a data local de hoje no formato YYYY-MM-DD para o filtro
         function obterDataLocalHoje() {
             const data = new Date();
             const offset = data.getTimezoneOffset();
@@ -415,14 +418,13 @@
             return dataLocal.toISOString().split('T')[0];
         }
 
-        // Renderiza a tabela aplicando a regra de filtro (Ocultar passados)
         function renderTable(dados) {
             tabelaCorpo.innerHTML = '';
             const hojeStr = obterDataLocalHoje();
 
             const dadosFiltrados = dados.filter(item => {
-                if (mostrarDiasAnteriores) return true; // Se toggle ativo, mostra tudo
-                // Se toggle desativado, mostra apenas se data da operação for HOJE ou FUTURO
+                if (mostrarDiasAnteriores) return true;
+                // Exibe apenas se a data da operação for igual ou maior que hoje
                 return item.data_operacao >= hojeStr;
             });
             
@@ -454,7 +456,6 @@
             }
         }
 
-        // Lógica do botão Toggle para mostrar dias anteriores
         btnTogglePast.addEventListener('click', () => {
             mostrarDiasAnteriores = !mostrarDiasAnteriores;
             
@@ -472,7 +473,6 @@
             renderTable(todosRegistros);
         });
 
-        // Máscaras Automáticas
         function aplicarMascaraPlaca(e) {
             let valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
             if (valor.length > 3) {
@@ -490,6 +490,25 @@
             v = v.replace(/(\d)(\d{4})$/, "$1-$2");
             e.target.value = v.substring(0, 15);
         });
+
+        window.switchTab = function(tabName) {
+            document.getElementById('view-registrar').classList.toggle('hidden-view', tabName !== 'registrar');
+            document.getElementById('view-consultas').classList.toggle('hidden-view', tabName !== 'consultas');
+            
+            const btnReg = document.getElementById('tab-btn-registrar');
+            const btnCon = document.getElementById('tab-btn-consultas');
+            
+            if (tabName === 'registrar') {
+                btnReg.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
+                btnCon.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
+            } else {
+                btnCon.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none bg-white text-valorem shadow';
+                btnReg.className = 'tab-btn px-6 py-2.5 rounded-md text-sm font-medium transition-colors focus:outline-none text-gray-600 hover:text-valorem';
+            }
+        };
+
+        // Inicia tudo
+        initDatabase();
 
     </script>
 </body>
