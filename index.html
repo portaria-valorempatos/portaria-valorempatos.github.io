@@ -581,7 +581,7 @@
 
             const filtrados = registrosCache.filter(r => {
                 if (mostrarAntigos) return true;
-                // Oculta se já foi concluído OU se a data da operação é anterior a hoje
+                // Se NÃO estiver mostrando antigos/concluídos, oculta os concluídos e os de dias anteriores
                 if (r.concluido) return false;
                 return r.dataOperacaoISO >= hojeISO;
             });
@@ -596,7 +596,12 @@
                 <tr class="hover:bg-slate-50/80 transition">
                     <td class="py-3 px-3 font-mono text-[11px] sm:text-xs text-slate-500 whitespace-nowrap">${r.dataRegistro}</td>
                     <td class="py-3 px-3 font-medium text-valorem-dark whitespace-nowrap">${r.dataOperacao}</td>
-                    <td class="py-3 px-3 whitespace-nowrap"><span class="px-2 py-0.5 bg-green-50 text-valorem rounded-full text-[11px] font-semibold">${r.operacao}</span></td>
+                    <td class="py-3 px-3 whitespace-nowrap">
+                        <div class="inline-flex items-center space-x-1.5">
+                            ${r.concluido ? '<span class="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-700 rounded-full text-xs font-bold" title="Concluído">✓</span>' : ''}
+                            <span class="px-2 py-0.5 bg-green-50 text-valorem rounded-full text-[11px] font-semibold">${r.operacao}</span>
+                        </div>
+                    </td>
                     <td class="py-3 px-3 font-semibold text-slate-800">${r.motorista}</td>
                     <td class="py-3 px-3 text-slate-600">${r.transportadora}</td>
                     <td class="py-3 px-3 font-mono font-medium whitespace-nowrap">${r.placaCavalo}</td>
@@ -604,7 +609,7 @@
                     <td class="py-3 px-3 font-mono text-slate-600 whitespace-nowrap">${r.telefone}</td>
                     ${isAdmin ? `
                         <td class="py-3 px-3 text-center space-x-1 whitespace-nowrap">
-                            <button onclick="concluirRegistro('${r.id}')" class="bg-green-100 hover:bg-green-200 text-green-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Concluído">✓</button>
+                            ${!r.concluido ? `<button onclick="concluirRegistro('${r.id}')" class="bg-green-100 hover:bg-green-200 text-green-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Concluído">✓</button>` : ''}
                             <button onclick="prepararEdicao('${r.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Editar">✏️</button>
                             <button onclick="excluirRegistro('${r.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Excluir">🗑️</button>
                         </td>` : ''}
