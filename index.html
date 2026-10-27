@@ -174,7 +174,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 px-1">
                 <h3 class="text-base sm:text-lg font-bold text-slate-700">Painel de Agendamentos Ativos</h3>
                 <button onclick="alternarDiasAnteriores()" id="btn-dias-anteriores" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5">
-                    <span>🕒 Mostrar concluídos / anteriores</span>
+                    <span>🕒 Mostrar dias anteriores</span>
                 </button>
             </div>
 
@@ -581,7 +581,6 @@
 
             const filtrados = registrosCache.filter(r => {
                 if (mostrarAntigos) return true;
-                // Se NÃO estiver mostrando antigos/concluídos, oculta os concluídos e os de dias anteriores
                 if (r.concluido) return false;
                 return r.dataOperacaoISO >= hojeISO;
             });
@@ -593,12 +592,12 @@
             }
 
             tbody.innerHTML = filtrados.map(r => `
-                <tr class="hover:bg-slate-50/80 transition">
+                <tr class="transition ${r.concluido ? 'bg-emerald-50/30 hover:bg-emerald-50/50' : 'hover:bg-slate-50/80'}">
                     <td class="py-3 px-3 font-mono text-[11px] sm:text-xs text-slate-500 whitespace-nowrap">${r.dataRegistro}</td>
                     <td class="py-3 px-3 font-medium text-valorem-dark whitespace-nowrap">${r.dataOperacao}</td>
                     <td class="py-3 px-3 whitespace-nowrap">
                         <div class="inline-flex items-center space-x-1.5">
-                            ${r.concluido ? '<span class="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-700 rounded-full text-xs font-bold" title="Concluído">✓</span>' : ''}
+                            ${r.concluido ? '<span class="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-700 rounded-full text-xs font-bold shadow-sm" title="Concluído">✓</span>' : ''}
                             <span class="px-2 py-0.5 bg-green-50 text-valorem rounded-full text-[11px] font-semibold">${r.operacao}</span>
                         </div>
                     </td>
