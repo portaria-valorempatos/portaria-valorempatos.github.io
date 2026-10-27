@@ -174,7 +174,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 px-1">
                 <h3 class="text-base sm:text-lg font-bold text-slate-700">Painel de Agendamentos Ativos</h3>
                 <button onclick="alternarDiasAnteriores()" id="btn-dias-anteriores" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5">
-                    <span>🕒 Mostrar dias anteriores</span>
+                    <span>🕒 Mostrar concluídos / anteriores</span>
                 </button>
             </div>
 
@@ -430,8 +430,10 @@
             const partesData = dataOpRaw.split('-');
             const dataOperacaoFmt = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
 
+            const regExistente = editId ? registrosCache.find(r => r.id === editId) : null;
+
             const dadosRegistro = {
-                timestamp: editId ? (registrosCache.find(r => r.id === editId)?.timestamp || Date.now()) : Date.now(),
+                timestamp: regExistente?.timestamp || Date.now(),
                 dataRegistro: dataRegistro,
                 dataOperacaoISO: dataOpRaw,
                 dataOperacao: dataOperacaoFmt,
@@ -440,7 +442,8 @@
                 transportadora: document.getElementById('transportadora').value.toUpperCase(),
                 placaCavalo: document.getElementById('placa-cavalo').value.toUpperCase(),
                 placaCarreta: document.getElementById('placa-carreta').value.toUpperCase() || '-',
-                telefone: document.getElementById('telefone').value || '-'
+                telefone: document.getElementById('telefone').value || '-',
+                concluido: regExistente ? (regExistente.concluido || false) : false
             };
 
             if (db) {
@@ -528,16 +531,10 @@
                 solicitarSenhaAdmin();
                 return;
             }
-            const ontem = new Date();
-            ontem.setDate(ontem.getDate() - 1);
-            const ontemISO = ontem.toISOString().split('T')[0];
-            const partes = ontemISO.split('-');
-            const ontemFmt = `${partes[2]}/${partes[1]}/${partes[0]}`;
 
             try {
                 await db.collection("agendamentos").doc(id).update({
-                    dataOperacaoISO: ontemISO,
-                    dataOperacao: ontemFmt
+                    concluido: true
                 });
                 mostrarToast("Agendamento marcado como concluído!");
             } catch (err) {
@@ -562,10 +559,10 @@
             mostrarAntigos = !mostrarAntigos;
             const btn = document.getElementById('btn-dias-anteriores');
             if (mostrarAntigos) {
-                btn.innerHTML = '<span>🕒 Ocultar dias anteriores</span>';
+                btn.innerHTML = '<span>🕒 Ocultar concluídos / anteriores</span>';
                 btn.className = "bg-valorem text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5";
             } else {
-                btn.innerHTML = '<span>🕒 Mostrar dias anteriores</span>';
+                btn.innerHTML = '<span>🕒 Mostrar concluídos / anteriores</span>';
                 btn.className = "bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5";
             }
             renderizarTabela();
@@ -584,6 +581,8 @@
 
             const filtrados = registrosCache.filter(r => {
                 if (mostrarAntigos) return true;
+                // Oculta se já foi concluído OU se a data da operação é anterior a hoje
+                if (r.concluido) return false;
                 return r.dataOperacaoISO >= hojeISO;
             });
 
