@@ -273,11 +273,12 @@
         let audioDesbloqueado = false;
         const COLECAO_DB = "agendamentos_teste";
 
+        // Solicita permissão para notificações nativas do Chrome/Windows
         if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
             Notification.requestPermission();
         }
 
-        // Destrava o som no primeiro clique
+        // Destrava o som do caminhao.mp3 no primeiro clique na página
         const destravarAudio = () => {
             if (!audioDesbloqueado) {
                 const audio = document.getElementById('som-caminhao');
@@ -287,6 +288,7 @@
                     audio.currentTime = 0;
                     audio.volume = 1;
                     audioDesbloqueado = true;
+                    console.log("Áudio local destravado com sucesso!");
                 }).catch(e => console.log("Aguardando interação..."));
             }
         };
@@ -294,7 +296,7 @@
         document.addEventListener('click', destravarAudio, { once: true });
         document.addEventListener('touchstart', destravarAudio, { once: true });
 
-        // Gerador do bipe sintético rápido (para garantir o alerta de 1 segundo caso o mp3 falhe)
+        // Bipe curto de segurança para garantir o alerta imediato
         function tocarBipeCurto() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -601,10 +603,10 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
 
-            // 1. Toca o bipe curto de 1 segundo primeiro
+            // 1. Toca o bipe de segurança imediato
             tocarBipeCurto();
 
-            // 2. Logo em seguida (após 1 segundo), toca o som de caminhao.mp3 em loop por 4 segundos
+            // 2. Toca o caminhao.mp3 local em loop por 4 segundos
             setTimeout(() => {
                 const audio = document.getElementById('som-caminhao');
                 if (audioDesbloqueado) {
@@ -618,12 +620,12 @@
                                 audio.pause();
                                 audio.currentTime = 0;
                             }, 4000);
-                        }).catch(e => console.log("Áudio local indisponível, apenas o bipe foi emitido."));
+                        }).catch(e => console.log("Áudio local indisponível."));
                     }
                 }
-            }, 1000);
+            }, 500);
 
-            // Notificação do Chrome
+            // 3. Dispara a Notificação nativa do Windows no canto da tela (mesmo com o navegador minimizado)
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Motorista Solicitado para Pesagem", {
                     body: `Favor chamar motorista para carregamento.\n${dados.motorista} - Placa: ${dados.placaCavalo}`,
