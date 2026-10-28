@@ -291,47 +291,6 @@
             }
         }
 
-        checarSessaoAdmin();
-
-        try {
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            db = firebase.firestore();
-            ouvirRegistrosEmTempoReal();
-        } catch (err) {
-            console.error("Erro crítico no Firebase:", err);
-        }
-
-        document.getElementById('data-operacao').valueAsDate = new Date();
-
-        function checarSessaoAdmin() {
-            const adminSalvo = localStorage.getItem('valorem_admin_sessao_teste');
-            const dataSalva = localStorage.getItem('valorem_admin_data_teste');
-            const hojeStr = new Date().toISOString().split('T')[0];
-
-            if (adminSalvo === 'true' && dataSalva === hojeStr) {
-                isAdmin = true;
-            } else {
-                localStorage.removeItem('valorem_admin_sessao_teste');
-                localStorage.removeItem('valorem_admin_data_teste');
-                isAdmin = false;
-            }
-            atualizarVisualAdmin();
-        }
-
-        function atualizarVisualAdmin() {
-            const btnStatus = document.getElementById('btn-admin-status');
-            if (isAdmin) {
-                btnStatus.innerText = "🔓 Admin Ativo (Sair)";
-                btnStatus.className = "bg-green-600 hover:bg-green-700 text-white px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm";
-            } else {
-                btnStatus.innerText = "🔒 Modo Admin";
-                btnStatus.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-300";
-            }
-            renderizarTabela();
-        }
-
         function switchTab(tab) {
             const btnReg = document.getElementById('tab-registrar');
             const btnCon = document.getElementById('tab-consultas');
@@ -405,6 +364,33 @@
             }
         }
 
+        function checarSessaoAdmin() {
+            const adminSalvo = localStorage.getItem('valorem_admin_sessao_teste');
+            const dataSalva = localStorage.getItem('valorem_admin_data_teste');
+            const hojeStr = new Date().toISOString().split('T')[0];
+
+            if (adminSalvo === 'true' && dataSalva === hojeStr) {
+                isAdmin = true;
+            } else {
+                localStorage.removeItem('valorem_admin_sessao_teste');
+                localStorage.removeItem('valorem_admin_data_teste');
+                isAdmin = false;
+            }
+            atualizarVisualAdmin();
+        }
+
+        function atualizarVisualAdmin() {
+            const btnStatus = document.getElementById('btn-admin-status');
+            if (isAdmin) {
+                btnStatus.innerText = "🔓 Admin Ativo (Sair)";
+                btnStatus.className = "bg-green-600 hover:bg-green-700 text-white px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm";
+            } else {
+                btnStatus.innerText = "🔒 Modo Admin";
+                btnStatus.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-300";
+            }
+            renderizarTabela();
+        }
+
         function formatarPlaca(input) {
             let v = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
             if (v.length > 3) {
@@ -422,3 +408,106 @@
                 v = '(' + v.substring(0, 2) + ') ' + v.substring(2);
             } else if (v.length > 0) {
                 v = '(' + v;
+            }
+            input.value = v;
+        }
+
+        function mostrarToast(mensagem, erro = false) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-msg');
+            msg.innerText = mensagem;
+            toast.className = `fixed bottom-5 right-5 transform translate-y-0 opacity-100 transition-all duration-300 text-white px-5 py-3 rounded-xl shadow-2xl z-50 text-sm font-medium flex items-center space-x-2 ${erro ? 'bg-red-600' : 'bg-valorem-dark'}`;
+            setTimeout(() => {
+                toast.className = "fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl z-50 text-sm font-medium flex items-center space-x-2";
+            }, 3500);
+        }
+
+        async function salvarAgendamento(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('edit-id').value;
+            const dataRegistroOriginal = document.getElementById('edit-data-registro').value;
+            
+            const agora = new Date();
+            const dataRegistro = dataRegistroOriginal || (agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}));
+            
+            const dataOpRaw = document.getElementById('data-operacao').value;
+            const partesData = dataOpRaw.split('-');
+            const dataOperacaoFmt = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
+
+            const regExistente = editId ? registrosCache.find(r => r.id === editId) : null;
+
+            const dadosRegistro = {
+                timestamp: regExistente?.timestamp || Date.now(),
+                dataRegistro: dataRegistro,
+                dataOperacaoISO: dataOpRaw,
+                dataOperacao: dataOperacaoFmt,
+                operacao: document.getElementById('operacao').value,
+                motorista: document.getElementById('motorista').value.toUpperCase(),
+                transportadora: document.getElementById('transportadora').value.toUpperCase(),
+                placaCavalo: document.getElementById('placa-cavalo').value.toUpperCase(),
+                placaCarreta: document.getElementById('placa-carreta').value.toUpperCase() || '-',
+                telefone: document.getElementById('telefone').value || '-',
+                concluido: regExistente ? (regExistente.concluido || false) : false,
+                statusAlerta: "Aguardando Chamada"
+            };
+
+            if (db) {
+                try {
+                    if (editId) {
+                        await db.collection(COLECAO_DB).doc(editId).update(dadosRegistro);
+                        mostrarToast('Agendamento de teste atualizado!');
+                        cancelarEdicao();
+                    } else {
+                        await db.collection(COLECAO_DB).add(dadosRegistro);
+                        mostrarToast('Agendamento de teste registrado!');
+                        document.getElementById('form-agendamento').reset();
+                        document.getElementById('data-operacao').valueAsDate = new Date();
+                    }
+                    switchTab('consultas');
+                } catch (err) {
+                    console.error("Erro ao salvar:", err);
+                    mostrarToast('Erro ao gravar no banco.', true);
+                }
+            }
+        }
+
+        function prepararEdicao(id) {
+            const reg = registrosCache.find(r => r.id === id);
+            if (!reg) return;
+
+            document.getElementById('edit-id').value = reg.id;
+            document.getElementById('edit-data-registro').value = reg.dataRegistro;
+            document.getElementById('operacao').value = reg.operacao;
+            document.getElementById('data-operacao').value = reg.dataOperacaoISO;
+            document.getElementById('motorista').value = reg.motorista;
+            document.getElementById('transportadora').value = reg.transportadora;
+            document.getElementById('placa-cavalo').value = reg.placaCavalo;
+            document.getElementById('placa-carreta').value = reg.placaCarreta === '-' ? '' : reg.placaCarreta;
+            document.getElementById('telefone').value = reg.telefone === '-' ? '' : reg.telefone;
+
+            document.getElementById('form-titulo').innerText = "Editar Agendamento (Teste)";
+            document.getElementById('btn-submit').querySelector('span').innerText = "Salvar Alterações";
+            document.getElementById('btn-cancelar-edicao').classList.remove('hidden');
+
+            switchTab('registrar');
+        }
+
+        function cancelarEdicao() {
+            document.getElementById('edit-id').value = '';
+            document.getElementById('edit-data-registro').value = '';
+            document.getElementById('form-agendamento').reset();
+            document.getElementById('data-operacao').valueAsDate = new Date();
+            document.getElementById('form-titulo').innerText = "Novo Agendamento";
+            document.getElementById('btn-submit').querySelector('span').innerText = "Registrar Entrada (TESTE)";
+            document.getElementById('btn-cancelar-edicao').classList.add('hidden');
+        }
+
+        function excluirRegistro(id) {
+            if (!isAdmin) return;
+            document.getElementById('excluir-id-target').value = id;
+            document.getElementById('modal-excluir').classList.remove('hidden');
+            document.getElementById('modal-excluir').classList.add('flex');
+        }
+
+        function fechar
