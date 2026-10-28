@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valorem - Agendamento Portaria (Teste)</title>
     
-    <!-- Favicon da Aba do Navegador -->
+    <!-- Favicon e Ícones do App -->
     <link rel="icon" type="image/png" href="valorem-simbolo-verde-transparente.png">
-    
-    <!-- Ícones oficiais para o App Instalado (PWA) -->
-    <link rel="apple-touch-icon" href="valorem-logobranco.png">
+    <link rel="apple-touch-icon" href="valorem-simbolo-verde-transparente.png">
     
     <!-- PWA / App Web Configs -->
     <link rel="manifest" href="manifest.json">
@@ -611,7 +609,7 @@
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Motorista Solicitado para Pesagem", {
                     body: "Favor chamar motorista: " + (dados.motorista || '') + " - Placa: " + (dados.placaCavalo || ''),
-                    icon: "valorem-logobranco.png",
+                    icon: "valorem-simbolo-verde-transparente.png",
                     requireInteraction: true
                 });
             }
