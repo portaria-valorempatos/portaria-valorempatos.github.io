@@ -1,5 +1,6 @@
-const CACHE_NAME = 'valorem-teste-v3';
+const CACHE_NAME = 'valorem-portaria-v4';
 const urlsToCache = [
+  './index.html',
   './teste.html',
   './valorem-simbolo-verde-transparente.png',
   './valorem-logotipo-horizontal-verde-com-slogan-transparente.png'
