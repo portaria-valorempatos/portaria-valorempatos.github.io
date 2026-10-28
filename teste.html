@@ -30,6 +30,9 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
+    <!-- Áudio Local do Caminhão -->
+    <audio id="som-caminhao" src="caminhao.mp3" preload="auto"></audio>
+
     <!-- Topo / Header -->
     <header class="bg-white shadow-sm border-b border-slate-200 py-3 px-4 sm:px-6 flex items-center justify-between">
         <div class="flex items-center space-x-3">
@@ -267,38 +270,50 @@
         const SENHA_MESTRE = "valorem2026";
         
         let ultimaVerificacaoChamada = Date.now();
+        let audioDesbloqueado = false;
         const COLECAO_DB = "agendamentos_teste";
 
         if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
             Notification.requestPermission();
         }
 
-        // GERADOR DE SOM SINTÉTICO (Garante bip sonoro alto e limpo sem travar o navegador)
-        function tocarAlarmeSonoro() {
+        // Destrava o som no primeiro clique
+        const destravarAudio = () => {
+            if (!audioDesbloqueado) {
+                const audio = document.getElementById('som-caminhao');
+                audio.volume = 0;
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audio.volume = 1;
+                    audioDesbloqueado = true;
+                }).catch(e => console.log("Aguardando interação..."));
+            }
+        };
+
+        document.addEventListener('click', destravarAudio, { once: true });
+        document.addEventListener('touchstart', destravarAudio, { once: true });
+
+        // Gerador do bipe sintético rápido (para garantir o alerta de 1 segundo caso o mp3 falhe)
+        function tocarBipeCurto() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
 
-                // Toca 3 bipes de alerta tipo buzina/alarme
-                for (let i = 0; i < 3; i++) {
-                    let osc = ctx.createOscillator();
-                    let gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(500, ctx.currentTime);
+                gain.gain.setValueAtTime(0.4, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
 
-                    osc.type = 'sawtooth'; // Som mais encorpado
-                    osc.frequency.setValueAtTime(440 + (i * 100), ctx.currentTime + (i * 0.4)); // Frequência de alarme
-
-                    gain.gain.setValueAtTime(0.5, ctx.currentTime + (i * 0.4));
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (i * 0.4) + 0.3);
-
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-
-                    osc.start(ctx.currentTime + (i * 0.4));
-                    osc.stop(ctx.currentTime + (i * 0.4) + 0.3);
-                }
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.3);
             } catch (e) {
-                console.log("Áudio gerado bloqueado ou não suportado:", e);
+                console.log("Bipe ignorado:", e);
             }
         }
 
@@ -586,9 +601,29 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
 
-            // Toca o alarme sonoro sintético imediatamente
-            tocarAlarmeSonoro();
+            // 1. Toca o bipe curto de 1 segundo primeiro
+            tocarBipeCurto();
 
+            // 2. Logo em seguida (após 1 segundo), toca o som de caminhao.mp3 em loop por 4 segundos
+            setTimeout(() => {
+                const audio = document.getElementById('som-caminhao');
+                if (audioDesbloqueado) {
+                    audio.currentTime = 0;
+                    audio.loop = true;
+                    let playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            setTimeout(() => {
+                                audio.loop = false;
+                                audio.pause();
+                                audio.currentTime = 0;
+                            }, 4000);
+                        }).catch(e => console.log("Áudio local indisponível, apenas o bipe foi emitido."));
+                    }
+                }
+            }, 1000);
+
+            // Notificação do Chrome
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Motorista Solicitado para Pesagem", {
                     body: `Favor chamar motorista para carregamento.\n${dados.motorista} - Placa: ${dados.placaCavalo}`,
@@ -600,6 +635,11 @@
         function fecharModalChamada() {
             document.getElementById('modal-chamada').classList.remove('flex');
             document.getElementById('modal-chamada').classList.add('hidden');
+            
+            const audio = document.getElementById('som-caminhao');
+            audio.loop = false;
+            audio.pause();
+            audio.currentTime = 0;
         }
 
         function ouvirRegistrosEmTempoReal() {
