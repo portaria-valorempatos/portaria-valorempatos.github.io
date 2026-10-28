@@ -239,58 +239,7 @@
 
     <!-- Script de Lógica -->
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAc2Ff8cm2Kz9hasPw60QrOwidE923ODWQ",
-            authDomain: "portaria-valorempatos.firebaseapp.com",
-            projectId: "portaria-valorempatos",
-            storageBucket: "portaria-valorempatos.firebasestorage.app",
-            messagingSenderId: "1049653344467",
-            appId: "1:1049653344467:web:35f2be3885f18463953c26",
-            measurementId: "G-PM9Q0CH3BP"
-        };
-
-        let db = null;
-        let registrosCache = [];
-        let mostrarAntigos = false;
-        let isAdmin = false;
-        const SENHA_MESTRE = "valorem2026";
-        
-        let ultimaVerificacaoChamada = Date.now();
-        let temporizadorReenvio = null;
-        const COLECAO_DB = "agendamentos_teste";
-
-        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-            Notification.requestPermission();
-        }
-
-        // ALARME SONORO CONTÍNUO POR 5 SEGUNDOS (Gerado por código)
-        function tocarAlarmeLongo() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-
-                for (let i = 0; i < 10; i++) {
-                    let osc = ctx.createOscillator();
-                    let gain = ctx.createGain();
-
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(600, ctx.currentTime + (i * 0.5));
-                    
-                    gain.gain.setValueAtTime(0.5, ctx.currentTime + (i * 0.5));
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (i * 0.5) + 0.4);
-
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-
-                    osc.start(ctx.currentTime + (i * 0.5));
-                    osc.stop(ctx.currentTime + (i * 0.5) + 0.4);
-                }
-            } catch (e) {
-                console.log("Erro no alarme sonoro:", e);
-            }
-        }
-
+        // DECLARAÇÃO GLOBAL DE TODAS AS FUNÇÕES DOS BOTÕES (Evita ReferenceError)
         function switchTab(tab) {
             const btnReg = document.getElementById('tab-registrar');
             const btnCon = document.getElementById('tab-consultas');
@@ -361,6 +310,59 @@
                 mostrarToast("Modo Administrador ativado com sucesso!");
             } else {
                 mostrarToast("Senha incorreta!", true);
+            }
+        }
+
+        // VARIÁVEIS E CONFIGURAÇÕES
+        const firebaseConfig = {
+            apiKey: "AIzaSyAc2Ff8cm2Kz9hasPw60QrOwidE923ODWQ",
+            authDomain: "portaria-valorempatos.firebaseapp.com",
+            projectId: "portaria-valorempatos",
+            storageBucket: "portaria-valorempatos.firebasestorage.app",
+            messagingSenderId: "1049653344467",
+            appId: "1:1049653344467:web:35f2be3885f18463953c26",
+            measurementId: "G-PM9Q0CH3BP"
+        };
+
+        let db = null;
+        let registrosCache = [];
+        let mostrarAntigos = false;
+        let isAdmin = false;
+        const SENHA_MESTRE = "valorem2026";
+        
+        let ultimaVerificacaoChamada = Date.now();
+        let temporizadorReenvio = null;
+        const COLECAO_DB = "agendamentos_teste";
+
+        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+
+        // ALARME SONORO CONTÍNUO POR 5 SEGUNDOS (Gerado por código)
+        function tocarAlarmeLongo() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                for (let i = 0; i < 10; i++) {
+                    let osc = ctx.createOscillator();
+                    let gain = ctx.createGain();
+
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(600, ctx.currentTime + (i * 0.5));
+                    
+                    gain.gain.setValueAtTime(0.5, ctx.currentTime + (i * 0.5));
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (i * 0.5) + 0.4);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(ctx.currentTime + (i * 0.5));
+                    osc.stop(ctx.currentTime + (i * 0.5) + 0.4);
+                }
+            } catch (e) {
+                console.log("Erro no alarme sonoro:", e);
             }
         }
 
@@ -510,4 +512,108 @@
             document.getElementById('modal-excluir').classList.add('flex');
         }
 
-        function fechar
+        function fecharModalExcluir() {
+            document.getElementById('modal-excluir').classList.remove('flex');
+            document.getElementById('modal-excluir').classList.add('hidden');
+        }
+
+        async function confirmarExclusao() {
+            const id = document.getElementById('excluir-id-target').value;
+            fecharModalExcluir();
+            try {
+                await db.collection(COLECAO_DB).doc(id).delete();
+                mostrarToast("Registro de teste excluído!");
+            } catch (err) {
+                console.error("Erro ao excluir:", err);
+                mostrarToast("Erro ao excluir registro.", true);
+            }
+        }
+
+        async function concluirRegistro(id) {
+            if (!isAdmin) return;
+            try {
+                await db.collection(COLECAO_DB).doc(id).update({
+                    concluido: true,
+                    statusAlerta: "Concluído"
+                });
+                mostrarToast("Agendamento de teste concluído!");
+            } catch (err) {
+                console.error("Erro ao concluir:", err);
+                mostrarToast("Erro ao concluir registro.", true);
+            }
+        }
+
+        async function chamarMotorista(id) {
+            if (!isAdmin) return;
+            try {
+                await db.collection(COLECAO_DB).doc(id).update({
+                    ultimaChamada: Date.now(),
+                    statusAlerta: "Chamada Enviada (Aguardando Ciente)"
+                });
+                mostrarToast("Alerta disparado para a portaria!");
+            } catch (err) {
+                console.error("Erro ao chamar motorista:", err);
+                mostrarToast("Erro ao acionar motorista.", true);
+            }
+        }
+
+        async function confirmarCientePortaria() {
+            const id = document.getElementById('chamada-id-atual').value;
+            
+            fecharModalChamadaLocal();
+
+            if (db && id) {
+                try {
+                    await db.collection(COLECAO_DB).doc(id).update({
+                        statusAlerta: "CONFIRMADO (Ciente)"
+                    });
+                    mostrarToast("Confirmação enviada ao Admin!");
+                } catch (err) {
+                    console.error("Erro ao confirmar ciente:", err);
+                }
+            }
+        }
+
+        function fecharModalChamadaLocal() {
+            document.getElementById('modal-chamada').classList.remove('flex');
+            document.getElementById('modal-chamada').classList.add('hidden');
+            
+            if (temporizadorReenvio) {
+                clearTimeout(temporizadorReenvio);
+                temporizadorReenvio = null;
+            }
+        }
+
+        function dispararAlertaPortaria(dados) {
+            document.getElementById('chamada-id-atual').value = dados.id;
+            document.getElementById('chamada-motorista-nome').innerText = dados.motorista;
+            document.getElementById('chamada-motorista-transp').innerText = dados.transportadora;
+            document.getElementById('chamada-motorista-placa').innerText = dados.placaCavalo;
+
+            const modal = document.getElementById('modal-chamada');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            tocarAlarmeLongo();
+
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("Motorista Solicitado para Pesagem", {
+                    body: `Favor chamar motorista para carregamento.\n${dados.motorista} - Placa: ${dados.placaCavalo}`,
+                    icon: "valorem-simbolo-verde-transparente.png",
+                    requireInteraction: true
+                });
+            }
+
+            if (temporizadorReenvio) clearTimeout(temporizadorReenvio);
+            
+            temporizadorReenvio = setTimeout(() => {
+                const modalVisivel = !document.getElementById('modal-chamada').classList.contains('hidden');
+                if (modalVisivel) {
+                    tocarAlarmeLongo();
+                    mostrarToast("⚠️ ALERTA: Confirmação pendente há 60 segundos!", true);
+                }
+            }, 60000);
+        }
+
+        function ouvirRegistrosEmTempoReal() {
+            db.
