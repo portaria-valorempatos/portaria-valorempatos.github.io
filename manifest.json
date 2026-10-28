@@ -1,0 +1,20 @@
+{
+  "name": "Portaria Valorem (Teste)",
+  "short_name": "Valorem Teste",
+  "start_url": "./teste.html",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#00732E",
+  "icons": [
+    {
+      "src": "valorem-simbolo-verde-transparente.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "valorem-simbolo-verde-transparente.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
