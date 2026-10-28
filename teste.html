@@ -30,9 +30,6 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
-    <!-- Áudio Local do Caminhão -->
-    <audio id="som-caminhao" src="caminhao.mp3" preload="auto"></audio>
-
     <!-- Topo / Header -->
     <header class="bg-white shadow-sm border-b border-slate-200 py-3 px-4 sm:px-6 flex items-center justify-between">
         <div class="flex items-center space-x-3">
@@ -171,7 +168,7 @@
         </section>
     </main>
 
-    <!-- Modal de Chamada de Motorista (Para a Portaria) -->
+    <!-- Modal de Chamada de Motorista -->
     <div id="modal-chamada" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden items-center justify-center z-[100] p-4">
         <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-lg w-full text-center space-y-6 border-4 border-valorem-light animate-[pulse_2s_infinite]">
             <div class="text-6xl animate-bounce">🚚</div>
@@ -259,49 +256,39 @@
         const SENHA_MESTRE = "valorem2026";
         
         let ultimaVerificacaoChamada = Date.now();
-        let audioDesbloqueado = false;
-        let temporizadorReenvio = null; // Controla os 60 segundos
+        let temporizadorReenvio = null;
         const COLECAO_DB = "agendamentos_teste";
 
         if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
             Notification.requestPermission();
         }
 
-        const destravarAudio = () => {
-            if (!audioDesbloqueado) {
-                const audio = document.getElementById('som-caminhao');
-                audio.volume = 0;
-                audio.play().then(() => {
-                    audio.pause();
-                    audio.currentTime = 0;
-                    audio.volume = 1;
-                    audioDesbloqueado = true;
-                }).catch(e => console.log("Aguardando interação..."));
-            }
-        };
-
-        document.addEventListener('click', destravarAudio, { once: true });
-        document.addEventListener('touchstart', destravarAudio, { once: true });
-
-        function tocarBipeCurto() {
+        // ALARME SONORO CONTÍNUO POR 5 SEGUNDOS (Gera bipes de alerta ritmados)
+        function tocarAlarmeLongo() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
-                let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
 
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(500, ctx.currentTime);
-                gain.gain.setValueAtTime(0.4, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                // Toca 10 bipes (cerca de 5 segundos de alarme)
+                for (let i = 0; i < 10; i++) {
+                    let osc = ctx.createOscillator();
+                    let gain = ctx.createGain();
 
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.3);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(600, ctx.currentTime + (i * 0.5));
+                    
+                    gain.gain.setValueAtTime(0.5, ctx.currentTime + (i * 0.5));
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (i * 0.5) + 0.4);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(ctx.currentTime + (i * 0.5));
+                    osc.stop(ctx.currentTime + (i * 0.5) + 0.4);
+                }
             } catch (e) {
-                console.log("Bipe ignorado:", e);
+                console.log("Erro no alarme sonoro:", e);
             }
         }
 
@@ -569,7 +556,6 @@
             }
         }
 
-        // Admin clica para chamar o motorista
         async function chamarMotorista(id) {
             if (!isAdmin) return;
             try {
@@ -584,11 +570,9 @@
             }
         }
 
-        // Portaria clica em "OK, Ciente"
         async function confirmarCientePortaria() {
             const id = document.getElementById('chamada-id-atual').value;
             
-            // Para o cronômetro de 60 segundos local se estiver rodando
             if (temporizadorReenvio) {
                 clearTimeout(temporizadorReenvio);
                 temporizadorReenvio = null;
@@ -596,11 +580,6 @@
 
             document.getElementById('modal-chamada').classList.remove('flex');
             document.getElementById('modal-chamada').classList.add('hidden');
-            
-            const audio = document.getElementById('som-caminhao');
-            audio.loop = false;
-            audio.pause();
-            audio.currentTime = 0;
 
             if (db && id) {
                 try {
@@ -614,7 +593,6 @@
             }
         }
 
-        // Executado na tela da Portaria quando o Admin chama
         function dispararAlertaPortaria(dados) {
             document.getElementById('chamada-id-atual').value = dados.id;
             document.getElementById('chamada-motorista-nome').innerText = dados.motorista;
@@ -625,49 +603,28 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
 
-            tocarBipeCurto();
+            // Toca o alarme contínuo por 5 segundos
+            tocarAlarmeLongo();
 
-            setTimeout(() => {
-                const audio = document.getElementById('som-caminhao');
-                if (audioDesbloqueado) {
-                    audio.currentTime = 0;
-                    audio.loop = true;
-                    let playPromise = audio.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            setTimeout(() => {
-                                audio.loop = false;
-                                audio.pause();
-                                audio.currentTime = 0;
-                            }, 4000);
-                        }).catch(e => console.log("Áudio bloqueado."));
-                    }
-                }
-            }, 500);
-
+            // NOTIFICAÇÃO DO CHROME FIXA NA TELA (Só some quando o usuário clicar no "X")
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Motorista Solicitado para Pesagem", {
                     body: `Favor chamar motorista para carregamento.\n${dados.motorista} - Placa: ${dados.placaCavalo}`,
-                    icon: "valorem-simbolo-verde-transparente.png"
+                    icon: "valorem-simbolo-verde-transparente.png",
+                    requireInteraction: true // TRAVA A NOTIFICAÇÃO NA LATERAL ATÉ O CLIQUE NO X
                 });
             }
 
-            // RECURSO DE 60 SEGUNDOS: Se em 1 minuto a portaria não clicar em OK, dispara o alerta novamente de forma automática
+            // CRONÔMETRO DE 60 SEGUNDOS: Se não houver confirmação, dispara insistência
             if (temporizadorReenvio) clearTimeout(temporizadorReenvio);
             
             temporizadorReenvio = setTimeout(() => {
                 const modalVisivel = !document.getElementById('modal-chamada').classList.contains('hidden');
                 if (modalVisivel) {
-                    // Toca o alarme novamente por insistência
-                    tocarBipeCurto();
-                    const audio = document.getElementById('som-caminhao');
-                    if (audioDesbloqueado) {
-                        audio.currentTime = 0;
-                        audio.play().catch(e => {});
-                    }
+                    tocarAlarmeLongo();
                     mostrarToast("⚠️ ALERTA: Confirmação pendente há 60 segundos!", true);
                 }
-            }, 60000); // 60 segundos
+            }, 60000);
         }
 
         function ouvirRegistrosEmTempoReal() {
@@ -681,8 +638,6 @@
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added" || change.type === "modified") {
                         const data = { id: change.doc.id, ...change.doc.data() };
-                        
-                        // Se houver nova chamada e NÃO estivermos no modo Admin, abre o modal na portaria
                         if (data.ultimaChamada && data.ultimaChamada > ultimaVerificacaoChamada) {
                             if (!isAdmin) {
                                 dispararAlertaPortaria(data);
