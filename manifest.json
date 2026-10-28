@@ -1,7 +1,7 @@
 {
-  "name": "Portaria Valorem (Teste)",
-  "short_name": "Valorem Teste",
-  "start_url": "./teste.html",
+  "name": "Valorem - Agendamento Portaria",
+  "short_name": "Portaria Valorem",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#00732E",
   "theme_color": "#00732E",
