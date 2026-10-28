@@ -23,12 +23,15 @@
             }
         }
     </script>
-    <!-- Firebase SDKs (Compat Version) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Áudio Local de Alarme (bipe.mp3) -->
+    <audio id="som-alarme" src="bipe.mp3" preload="auto"></audio>
 
     <!-- Topo / Header -->
     <header class="bg-white shadow-sm border-b border-slate-200 py-3 px-4 sm:px-6 flex items-center justify-between">
@@ -59,7 +62,7 @@
             </div>
         </div>
 
-        <!-- Seção 1: Formulário de Registro / Edição -->
+        <!-- Seção 1: Formulário -->
         <section id="section-registrar" class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 max-w-3xl mx-auto">
             <div class="bg-valorem p-5 text-white flex justify-between items-center">
                 <div>
@@ -168,7 +171,7 @@
         </section>
     </main>
 
-    <!-- Modal de Chamada de Motorista -->
+    <!-- Modal de Chamada -->
     <div id="modal-chamada" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden items-center justify-center z-[100] p-4">
         <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-lg w-full text-center space-y-6 border-4 border-valorem-light animate-[pulse_2s_infinite]">
             <div class="text-6xl animate-bounce">🚚</div>
@@ -256,6 +259,7 @@
         const SENHA_MESTRE = "valorem2026";
         
         let ultimaVerificacaoChamada = Date.now();
+        let audioDesbloqueado = false;
         let temporizadorReenvio = null;
         const COLECAO_DB = "agendamentos_teste";
 
@@ -263,32 +267,34 @@
             Notification.requestPermission();
         }
 
-        // ALARME SONORO CONTÍNUO POR 5 SEGUNDOS (Gera bipes de alerta ritmados)
-        function tocarAlarmeLongo() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
+        const destravarAudio = () => {
+            if (!audioDesbloqueado) {
+                const audio = document.getElementById('som-alarme');
+                audio.volume = 0;
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audio.volume = 1;
+                    audioDesbloqueado = true;
+                }).catch(e => console.log("Aguardando interação..."));
+            }
+        };
 
-                // Toca 10 bipes (cerca de 5 segundos de alarme)
-                for (let i = 0; i < 10; i++) {
-                    let osc = ctx.createOscillator();
-                    let gain = ctx.createGain();
+        document.addEventListener('click', destravarAudio, { once: true });
+        document.addEventListener('touchstart', destravarAudio, { once: true });
 
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(600, ctx.currentTime + (i * 0.5));
-                    
-                    gain.gain.setValueAtTime(0.5, ctx.currentTime + (i * 0.5));
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (i * 0.5) + 0.4);
-
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-
-                    osc.start(ctx.currentTime + (i * 0.5));
-                    osc.stop(ctx.currentTime + (i * 0.5) + 0.4);
-                }
-            } catch (e) {
-                console.log("Erro no alarme sonoro:", e);
+        function tocarAlarmeLocal() {
+            const audio = document.getElementById('som-alarme');
+            if (audioDesbloqueado) {
+                audio.currentTime = 0;
+                audio.loop = true;
+                audio.play().then(() => {
+                    setTimeout(() => {
+                        audio.loop = false;
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }, 5000);
+                }).catch(e => console.log("Erro ao reproduzir bipe local:", e));
             }
         }
 
@@ -573,13 +579,7 @@
         async function confirmarCientePortaria() {
             const id = document.getElementById('chamada-id-atual').value;
             
-            if (temporizadorReenvio) {
-                clearTimeout(temporizadorReenvio);
-                temporizadorReenvio = null;
-            }
-
-            document.getElementById('modal-chamada').classList.remove('flex');
-            document.getElementById('modal-chamada').classList.add('hidden');
+            fecharModalChamadaLocal();
 
             if (db && id) {
                 try {
@@ -593,6 +593,23 @@
             }
         }
 
+        function fecharModalChamadaLocal() {
+            document.getElementById('modal-chamada').classList.remove('flex');
+            document.getElementById('modal-chamada').classList.add('hidden');
+            
+            if (temporizadorReenvio) {
+                clearTimeout(temporizadorReenvio);
+                temporizadorReenvio = null;
+            }
+
+            const audio = document.getElementById('som-alarme');
+            if (audio) {
+                audio.loop = false;
+                audio.pause();
+                audio.currentTime = 0;
+            }
+        }
+
         function dispararAlertaPortaria(dados) {
             document.getElementById('chamada-id-atual').value = dados.id;
             document.getElementById('chamada-motorista-nome').innerText = dados.motorista;
@@ -603,25 +620,22 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
 
-            // Toca o alarme contínuo por 5 segundos
-            tocarAlarmeLongo();
+            tocarAlarmeLocal();
 
-            // NOTIFICAÇÃO DO CHROME FIXA NA TELA (Só some quando o usuário clicar no "X")
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Motorista Solicitado para Pesagem", {
                     body: `Favor chamar motorista para carregamento.\n${dados.motorista} - Placa: ${dados.placaCavalo}`,
                     icon: "valorem-simbolo-verde-transparente.png",
-                    requireInteraction: true // TRAVA A NOTIFICAÇÃO NA LATERAL ATÉ O CLIQUE NO X
+                    requireInteraction: true
                 });
             }
 
-            // CRONÔMETRO DE 60 SEGUNDOS: Se não houver confirmação, dispara insistência
             if (temporizadorReenvio) clearTimeout(temporizadorReenvio);
             
             temporizadorReenvio = setTimeout(() => {
                 const modalVisivel = !document.getElementById('modal-chamada').classList.contains('hidden');
                 if (modalVisivel) {
-                    tocarAlarmeLongo();
+                    tocarAlarmeLocal();
                     mostrarToast("⚠️ ALERTA: Confirmação pendente há 60 segundos!", true);
                 }
             }, 60000);
@@ -630,104 +644,4 @@
         function ouvirRegistrosEmTempoReal() {
             db.collection(COLECAO_DB).orderBy("timestamp", "desc").onSnapshot((snapshot) => {
                 registrosCache = [];
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    registrosCache.push({ id: doc.id, ...data });
-                });
-
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === "added" || change.type === "modified") {
-                        const data = { id: change.doc.id, ...change.doc.data() };
-                        if (data.ultimaChamada && data.ultimaChamada > ultimaVerificacaoChamada) {
-                            if (!isAdmin) {
-                                dispararAlertaPortaria(data);
-                            }
-                            ultimaVerificacaoChamada = data.ultimaChamada;
-                        }
-                    }
-                });
-
-                renderizarTabela();
-            }, (error) => {
-                console.error("Erro na escuta:", error);
-            });
-        }
-
-        function alternarDiasAnteriores() {
-            mostrarAntigos = !mostrarAntigos;
-            const btn = document.getElementById('btn-dias-anteriores');
-            if (mostrarAntigos) {
-                btn.innerHTML = '<span>🕒 Ocultar concluídos / anteriores</span>';
-                btn.className = "bg-valorem text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5";
-            } else {
-                btn.innerHTML = '<span>🕒 Mostrar concluídos / anteriores</span>';
-                btn.className = "bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5";
-            }
-            renderizarTabela();
-        }
-
-        function renderizarTabela() {
-            const tbody = document.getElementById('tabela-registros');
-            const thAcoes = document.getElementById('th-acoes');
-            const hojeISO = new Date().toISOString().split('T')[0];
-
-            if (isAdmin) {
-                thAcoes.classList.remove('hidden');
-            } else {
-                thAcoes.classList.add('hidden');
-            }
-
-            const filtrados = registrosCache.filter(r => {
-                if (mostrarAntigos) return true;
-                if (r.concluido) return false;
-                return r.dataOperacaoISO >= hojeISO;
-            });
-
-            if (filtrados.length === 0) {
-                const colSpan = isAdmin ? 10 : 9;
-                tbody.innerHTML = `<tr><td colspan="${colSpan}" class="text-center p-6 text-slate-400 font-medium text-sm">Nenhum registro de teste encontrado.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = filtrados.map(r => {
-                let badgeStatus = '<span class="text-slate-400 text-xs">-</span>';
-                if (r.statusAlerta === "Chamada Enviada (Aguardando Ciente)") {
-                    badgeStatus = '<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">⏳ Aguardando Ciente</span>';
-                } else if (r.statusAlerta === "CONFIRMADO (Ciente)") {
-                    badgeStatus = '<span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full">✓ Confirmado</span>';
-                } else if (r.statusAlerta === "Concluído") {
-                    badgeStatus = '<span class="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Concluído</span>';
-                }
-
-                return `
-                    <tr class="transition ${r.concluido ? 'bg-emerald-50/30 hover:bg-emerald-50/50' : 'hover:bg-slate-50/80'}">
-                        <td class="py-3 px-3 font-mono text-[11px] sm:text-xs text-slate-500 whitespace-nowrap">${r.dataRegistro}</td>
-                        <td class="py-3 px-3 font-medium text-valorem-dark whitespace-nowrap">${r.dataOperacao}</td>
-                        <td class="py-3 px-3 whitespace-nowrap">
-                            <div class="inline-flex items-center space-x-1.5">
-                                ${r.concluido ? '<span class="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-700 rounded-full text-xs font-bold shadow-sm" title="Concluído">✓</span>' : ''}
-                                <span class="px-2 py-0.5 bg-green-50 text-valorem rounded-full text-[11px] font-semibold">${r.operacao}</span>
-                            </div>
-                        </td>
-                        <td class="py-3 px-3 font-semibold text-slate-800">${r.motorista}</td>
-                        <td class="py-3 px-3 text-slate-600">${r.transportadora}</td>
-                        <td class="py-3 px-3 font-mono font-medium whitespace-nowrap">${r.placaCavalo}</td>
-                        <td class="py-3 px-3 font-mono text-slate-500 whitespace-nowrap">${r.placaCarreta}</td>
-                        <td class="py-3 px-3 font-mono text-slate-600 whitespace-nowrap">${r.telefone}</td>
-                        <td class="py-3 px-3 text-center whitespace-nowrap">${badgeStatus}</td>
-                        ${isAdmin ? `
-                            <td class="py-3 px-3 text-center space-x-1 whitespace-nowrap">
-                                ${!r.concluido ? `
-                                    <button onclick="chamarMotorista('${r.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Chamar Motorista">🚚</button>
-                                    <button onclick="concluirRegistro('${r.id}')" class="bg-green-100 hover:bg-green-200 text-green-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Concluído">✓</button>
-                                ` : ''}
-                                <button onclick="prepararEdicao('${r.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Editar">✏️</button>
-                                <button onclick="excluirRegistro('${r.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Excluir">🗑️</button>
-                            ` : ''}
-                    </tr>
-                `;
-            }).join('');
-        }
-    </script>
-</body>
-</html>
+                snapshot.forEach((doc
