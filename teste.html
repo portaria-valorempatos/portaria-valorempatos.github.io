@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,35 +32,30 @@
         }
     </script>
     
-    <!-- Firebase SDKs (Compat Version) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
-    <!-- Topo / Header -->
     <header class="bg-white shadow-sm border-b border-slate-200 py-3 px-4 sm:px-6 flex items-center justify-between">
         <div class="flex items-center space-x-3">
             <img src="valorem-logotipo-horizontal-verde-com-slogan-transparente.png" alt="Valorem Logotipo" class="h-8 sm:h-10 object-contain">
-            <span class="bg-red-100 text-red-700 font-bold px-2 py-1 rounded text-xs">AMBIENTE DE TESTE</span>
+            <span class="bg-red-100 text-red-700 font-bold px-2 py-1 rounded text-xs">APP TESTE</span>
         </div>
         <div class="flex items-center space-x-2 sm:space-x-3">
-            <span id="status-conexao" class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-800">Online (Sincronizado)</span>
+            <span id="status-conexao" class="text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-medium bg-green-100 text-green-800">Online</span>
             <button onclick="solicitarSenhaAdmin()" id="btn-admin-status" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-300">
                 🔒 Modo Admin
             </button>
         </div>
     </header>
 
-    <!-- Conteúdo Principal -->
     <main class="max-w-7xl w-full mx-auto p-2 sm:p-4 lg:p-6 flex-grow">
-        
-        <!-- Abas de Navegação -->
         <div class="flex justify-center mb-5">
             <div class="bg-slate-200 p-1 rounded-xl flex space-x-1 shadow-inner">
                 <button id="tab-registrar" onclick="switchTab('registrar')" class="px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 bg-white text-valorem shadow-sm">
-                    Registar / Gerir
+                    Registrar / Gerenciar
                 </button>
                 <button id="tab-consultas" onclick="switchTab('consultas')" class="px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 text-slate-600 hover:text-slate-900">
                     Consultas (Público)
@@ -68,12 +63,10 @@
             </div>
         </div>
 
-        <!-- Seção 1: Formulário -->
         <section id="section-registrar" class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 max-w-3xl mx-auto">
             <div class="bg-valorem p-5 text-white flex justify-between items-center">
                 <div>
                     <h2 id="form-titulo" class="text-lg sm:text-xl font-bold tracking-wide">Novo Agendamento</h2>
-                    <p id="form-subtitulo" class="text-xs text-green-100 mt-0.5">Preencha os dados de entrada na portaria.</p>
                 </div>
                 <button id="btn-cancelar-edicao" onclick="cancelarEdicao()" class="hidden bg-amber-500 hover:bg-amber-600 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition">
                     Cancelar Edição
@@ -102,47 +95,16 @@
 
                 <div>
                     <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Nome do Motorista *</label>
-                    <input type="text" id="motorista" list="lista-motoristas" required placeholder="Digite ou selecione o nome" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 text-sm transition">
+                    <input type="text" id="motorista" list="lista-motoristas" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 text-sm uppercase">
                     <datalist id="lista-motoristas">
                         <option value="ANGELO CESAR DE MAGALHÃES">
                         <option value="BRUNO HENRIQUE ALVES DE JESUS">
-                        <option value="CLAUDIO APARECIDO DE ARAUJO">
-                        <option value="DANIEL HENRIQUE DE SOUSA">
-                        <option value="DENILSON LAZARO CORREA">
-                        <option value="ECIO CRISTINO FERREIRA">
-                        <option value="ERNANI EUSTAQUIO DE SOUSA">
-                        <option value="FERNANDO DIVINO SILVESTRE">
-                        <option value="JOAO BRAZ DE OLIVEIRA">
-                        <option value="JOSE DOS REIS TEODORO">
-                        <option value="JOSE VALDECIR CORREA">
-                        <option value="JULIO CESAR DE OLIVEIRA">
-                        <option value="KLEBER ADILSON LIUTI">
-                        <option value="LINDOMAR MOREIRA DE LIMA">
-                        <option value="MARCILIO NUNES GOMES">
-                        <option value="MARCIO A. BATISTA PEREIRA">
-                        <option value="MARCO TULIO DE MELO">
-                        <option value="MAURINO DA SILVA CUSTODIO">
-                        <option value="MAURO FRANCISCO PEREIRA">
-                        <option value="MAX RICARDO PANTALEAO">
-                        <option value="NATANIEL CICERO DA SILVA">
-                        <option value="OSVANDO RODRIGUES ALVES">
-                        <option value="RENIO JOSE PEREIRA">
-                        <option value="RENIVALDO RENATO DE QUEIROZ">
-                        <option value="RICARDO JOSE DE SOUSA">
-                        <option value="RODRIGO DOS REIS VIEIRA">
-                        <option value="ROSEY MARQUES DE FREITAS">
-                        <option value="TIAGO AUGUSTO SILVA">
-                        <option value="VANDERLEI MARTINS RIBEIRO">
-                        <option value="VINICIUS JOSE DA SCUNHA SILVEIRA">
-                        <option value="WANDERSON VINICIUS DE SOUSA MACHADO">
-                        <option value="WELLINGTON WESLEY A. FERREIRA">
-                        <option value="WELTON DA SILVA LEMOS">
                     </datalist>
                 </div>
 
                 <div>
                     <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Transportadora *</label>
-                    <input type="text" id="transportadora" list="lista-transportadoras" required placeholder="Digite ou selecione a transportadora" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 text-sm transition">
+                    <input type="text" id="transportadora" list="lista-transportadoras" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 text-sm uppercase">
                     <datalist id="lista-transportadoras">
                         <option value="G10 TRANSPORTES S.A">
                     </datalist>
@@ -151,30 +113,29 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Placa Cavalo *</label>
-                        <input type="text" id="placa-cavalo" required placeholder="EX: ABC-1234" maxlength="8" oninput="formatarPlaca(this)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none uppercase font-mono text-slate-700 text-sm transition">
+                        <input type="text" id="placa-cavalo" required maxlength="8" oninput="formatarPlaca(this)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem outline-none uppercase font-mono text-slate-700 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Placa Carreta</label>
-                        <input type="text" id="placa-carreta" placeholder="EX: DEF-5678" maxlength="8" oninput="formatarPlaca(this)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none uppercase font-mono text-slate-700 text-sm transition">
+                        <input type="text" id="placa-carreta" maxlength="8" oninput="formatarPlaca(this)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem outline-none uppercase font-mono text-slate-700 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Telefone</label>
-                        <input type="text" id="telefone" placeholder="(34) 99999-9999" maxlength="15" oninput="formatarTelefone(this)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none font-mono text-slate-700 text-sm transition">
+                        <input type="text" id="telefone" maxlength="15" oninput="formatarTelefone(this)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem outline-none font-mono text-slate-700 text-sm">
                     </div>
                 </div>
 
                 <div class="pt-2">
                     <button type="submit" id="btn-submit" class="w-full bg-valorem hover:bg-valorem-dark text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2 text-sm">
-                        <span>Registar Entrada (TESTE)</span>
+                        <span>Registrar Entrada (TESTE)</span>
                     </button>
                 </div>
             </form>
         </section>
 
-        <!-- Seção 2: Tabela de Consultas -->
         <section id="section-consultas" class="hidden space-y-3">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 px-1">
-                <h3 class="text-base sm:text-lg font-bold text-slate-700">Painel de Agendamentos Ativos (TESTE)</h3>
+                <h3 class="text-base sm:text-lg font-bold text-slate-700">Painel de Agendamentos (TESTE)</h3>
                 <button onclick="alternarDiasAnteriores()" id="btn-dias-anteriores" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5">
                     <span>🕒 Mostrar concluídos / anteriores</span>
                 </button>
@@ -185,20 +146,18 @@
                     <table class="w-full text-left border-collapse text-xs sm:text-sm">
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200 text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                <th class="py-3 px-3">Registo</th>
-                                <th class="py-3 px-3">Data Operação</th>
+                                <th class="py-3 px-3">Registro</th>
+                                <th class="py-3 px-3">Data</th>
                                 <th class="py-3 px-3">Operação</th>
                                 <th class="py-3 px-3">Motorista</th>
-                                <th class="py-3 px-3">Transportadora</th>
-                                <th class="py-3 px-3">Placa Cavalo</th>
-                                <th class="py-3 px-3">Placa Carreta</th>
-                                <th class="py-3 px-3">Telefone</th>
+                                <th class="py-3 px-3">Transp.</th>
+                                <th class="py-3 px-3">Cavalo</th>
                                 <th class="py-3 px-3 text-center">Status Alerta</th>
                                 <th id="th-acoes" class="py-3 px-3 text-center hidden">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-registros" class="divide-y divide-slate-100 text-slate-700">
-                            <tr><td colspan="10" class="text-center p-6 text-slate-400 font-medium text-sm">A carregar registos de teste...</td></tr>
+                            <tr><td colspan="8" class="text-center p-6 text-slate-400 font-medium text-sm">Carregando...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -206,22 +165,20 @@
         </section>
     </main>
 
-    <!-- Modal de Chamada -->
+    <!-- Modal Chamada Portaria -->
     <div id="modal-chamada" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden items-center justify-center z-[100] p-4">
         <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-lg w-full text-center space-y-6 border-4 border-valorem-light animate-[pulse_2s_infinite]">
             <div class="text-6xl animate-bounce">🚚</div>
             <h2 class="text-3xl font-extrabold text-slate-800 uppercase tracking-wider">Atenção!</h2>
-            <p class="text-sm font-semibold text-valorem uppercase">MOTORISTA SOLICITADO PARA PESAGEM</p>
+            <p class="text-sm font-semibold text-valorem uppercase">MOTORISTA SOLICITADO</p>
             
             <div class="space-y-2 bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-inner">
                 <p class="text-2xl font-bold text-valorem-dark" id="chamada-motorista-nome">NOME</p>
-                <p class="text-base text-slate-600 font-medium" id="chamada-motorista-transp">TRANSPORTADORA</p>
                 <div class="inline-block bg-slate-200 px-4 py-1.5 rounded-lg mt-2">
                     <p class="text-xl font-mono font-bold text-slate-800 tracking-widest" id="chamada-motorista-placa">PLACA</p>
                 </div>
             </div>
             
-            <p class="text-sm text-slate-500 font-medium">Por favor, chamar motorista para carregamento</p>
             <input type="hidden" id="chamada-id-atual" value="">
             <button onclick="confirmarCientePortaria()" class="w-full bg-valorem hover:bg-valorem-dark text-white font-bold py-4 rounded-xl text-lg shadow-xl transition transform active:scale-95">
                 OK, CIENTE
@@ -229,147 +186,148 @@
         </div>
     </div>
 
-    <!-- Modais Admin -->
+    <!-- Modais Admin Extras -->
     <div id="modal-admin" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4">
             <h3 class="text-lg font-bold text-slate-800">Modo Admin</h3>
-            <p class="text-xs text-slate-500">Acesso restrito aos Administradores</p>
-            <input type="password" id="senha-admin-input" placeholder="Digite a palavra-passe" onkeydown="verificarEnterAdmin(event)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem outline-none text-slate-700 text-sm">
-            <div class="flex space-x-3 pt-2">
-                <button onclick="fecharModalAdmin()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-xl text-sm transition">Cancelar</button>
-                <button onclick="verificarSenhaAdmin()" class="flex-1 bg-valorem hover:bg-valorem-dark text-white font-semibold py-2 rounded-xl text-sm transition">Entrar</button>
+            <input type="password" id="senha-admin-input" placeholder="Senha" onkeydown="verificarEnterAdmin(event)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 outline-none text-slate-700 text-sm">
+            <div class="flex space-x-3">
+                <button onclick="fecharModalAdmin()" class="flex-1 bg-slate-100 hover:bg-slate-200 py-2 rounded-xl text-sm">Cancelar</button>
+                <button onclick="verificarSenhaAdmin()" class="flex-1 bg-valorem text-white py-2 rounded-xl text-sm">Entrar</button>
             </div>
         </div>
     </div>
 
     <div id="modal-sair-admin" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200 text-center">
-            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">⚠️</div>
-            <h3 class="text-lg font-bold text-slate-800">Sair do Modo Admin</h3>
-            <p class="text-xs text-slate-500">Deseja realmente sair do modo Administrador?</p>
-            <div class="flex space-x-3 pt-2">
-                <button onclick="fecharModalSair()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">Cancelar</button>
-                <button onclick="confirmarSaidaAdmin()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-xl text-sm transition">Sair</button>
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 text-center">
+            <h3 class="text-lg font-bold text-slate-800">Sair do Admin?</h3>
+            <div class="flex space-x-3">
+                <button onclick="fecharModalSair()" class="flex-1 bg-slate-100 hover:bg-slate-200 py-2.5 rounded-xl text-sm">Cancelar</button>
+                <button onclick="confirmarSaidaAdmin()" class="flex-1 bg-red-600 text-white py-2.5 rounded-xl text-sm">Sair</button>
             </div>
         </div>
     </div>
 
     <div id="modal-excluir" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200 text-center">
-            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">🗑️</div>
-            <h3 class="text-lg font-bold text-slate-800">Excluir Agendamento</h3>
-            <p class="text-xs text-slate-500">Tem a certeza que deseja excluir este agendamento de teste?</p>
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 text-center">
+            <h3 class="text-lg font-bold text-slate-800">Excluir?</h3>
             <input type="hidden" id="excluir-id-target" value="">
-            <div class="flex space-x-3 pt-2">
-                <button onclick="fecharModalExcluir()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">Cancelar</button>
-                <button onclick="confirmarExclusao()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-xl text-sm transition">Excluir</button>
+            <div class="flex space-x-3">
+                <button onclick="fecharModalExcluir()" class="flex-1 bg-slate-100 hover:bg-slate-200 py-2.5 rounded-xl text-sm">Cancelar</button>
+                <button onclick="confirmarExclusao()" class="flex-1 bg-red-600 text-white py-2.5 rounded-xl text-sm">Excluir</button>
             </div>
         </div>
     </div>
 
-    <footer class="text-center py-3 text-xs text-slate-400">
-        Valorem Agronegócios &copy; 2026 - Todos os direitos reservados (Ambiente de Teste).
-    </footer>
-
-    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl z-50 text-sm font-medium flex items-center space-x-2">
+    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl z-50 text-sm flex items-center">
         <span id="toast-msg">Mensagem</span>
     </div>
 
-    <!-- Script de Lógica -->
+    <!-- Script Principal -->
     <script>
-        function switchTab(tab) {
+        window.switchTab = function(tab) {
             const btnReg = document.getElementById('tab-registrar');
             const btnCon = document.getElementById('tab-consultas');
             const secReg = document.getElementById('section-registrar');
             const secCon = document.getElementById('section-consultas');
 
             if (tab === 'registrar') {
-                btnReg.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 bg-white text-valorem shadow-sm";
-                btnCon.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+                btnReg.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm bg-white text-valorem shadow-sm";
+                btnCon.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm text-slate-600";
                 secReg.classList.remove('hidden');
                 secCon.classList.add('hidden');
             } else {
-                btnCon.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 bg-white text-valorem shadow-sm";
-                btnReg.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+                btnCon.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm bg-white text-valorem shadow-sm";
+                btnReg.className = "px-5 py-2 rounded-lg font-semibold text-xs sm:text-sm text-slate-600";
                 secCon.classList.remove('hidden');
                 secReg.classList.add('hidden');
                 renderizarTabela();
             }
-        }
+        };
 
-        function solicitarSenhaAdmin() {
+        window.solicitarSenhaAdmin = function() {
             if (isAdmin) {
                 document.getElementById('modal-sair-admin').classList.remove('hidden');
                 document.getElementById('modal-sair-admin').classList.add('flex');
-                return;
+            } else {
+                document.getElementById('modal-admin').classList.remove('hidden');
+                document.getElementById('modal-admin').classList.add('flex');
+                document.getElementById('senha-admin-input').value = '';
+                document.getElementById('senha-admin-input').focus();
             }
-            document.getElementById('modal-admin').classList.remove('hidden');
-            document.getElementById('modal-admin').classList.add('flex');
-            document.getElementById('senha-admin-input').value = '';
-            document.getElementById('senha-admin-input').focus();
-        }
+        };
 
-        function fecharModalAdmin() {
+        window.fecharModalAdmin = function() {
             document.getElementById('modal-admin').classList.remove('flex');
             document.getElementById('modal-admin').classList.add('hidden');
-        }
+        };
 
-        function fecharModalSair() {
+        window.fecharModalSair = function() {
             document.getElementById('modal-sair-admin').classList.remove('flex');
             document.getElementById('modal-sair-admin').classList.add('hidden');
-        }
+        };
 
-        function confirmarSaidaAdmin() {
+        window.confirmarSaidaAdmin = function() {
             isAdmin = false;
             localStorage.removeItem('valorem_admin_sessao_teste');
             localStorage.removeItem('valorem_admin_data_teste');
             fecharModalSair();
             atualizarVisualAdmin();
             mostrarToast("Modo Admin encerrado.");
-        }
+        };
 
-        function verificarEnterAdmin(event) {
-            if (event.key === 'Enter') {
-                verificarSenhaAdmin();
-            }
-        }
+        window.verificarEnterAdmin = function(event) {
+            if (event.key === 'Enter') verificarSenhaAdmin();
+        };
 
-        function verificarSenhaAdmin() {
+        window.verificarSenhaAdmin = function() {
             const senha = document.getElementById('senha-admin-input').value;
             if (senha === SENHA_MESTRE) {
                 isAdmin = true;
                 const hojeStr = new Date().toISOString().split('T')[0];
                 localStorage.setItem('valorem_admin_sessao_teste', 'true');
                 localStorage.setItem('valorem_admin_data_teste', hojeStr);
-
                 fecharModalAdmin();
                 atualizarVisualAdmin();
-                mostrarToast("Modo Administrador ativado com sucesso!");
+                mostrarToast("Admin ativado!");
             } else {
-                mostrarToast("Palavra-passe incorreta!", true);
+                mostrarToast("Senha incorreta!", true);
             }
-        }
+        };
 
-        function formatarPlaca(input) {
+        window.formatarPlaca = function(input) {
             let v = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            if (v.length > 3) {
-                v = v.substring(0, 3) + '-' + v.substring(3, 7);
-            }
+            if (v.length > 3) v = v.substring(0, 3) + '-' + v.substring(3, 7);
             input.value = v;
-        }
+        };
 
-        function formatarTelefone(input) {
+        window.formatarTelefone = function(input) {
             let v = input.value.replace(/\D/g, '');
             if (v.length > 11) v = v.substring(0, 11);
-            if (v.length > 6) {
-                v = '(' + v.substring(0, 2) + ') ' + v.substring(2, 7) + '-' + v.substring(7, 11);
-            } else if (v.length > 2) {
-                v = '(' + v.substring(0, 2) + ') ' + v.substring(2);
-            } else if (v.length > 0) {
-                v = '(' + v;
-            }
+            if (v.length > 6) v = '(' + v.substring(0, 2) + ') ' + v.substring(2, 7) + '-' + v.substring(7, 11);
+            else if (v.length > 2) v = '(' + v.substring(0, 2) + ') ' + v.substring(2);
+            else if (v.length > 0) v = '(' + v;
             input.value = v;
-        }
+        };
+
+        window.alternarDiasAnteriores = function() {
+            mostrarAntigos = !mostrarAntigos;
+            renderizarTabela();
+        };
+
+        window.cancelarEdicao = function() {
+            document.getElementById('edit-id').value = '';
+            document.getElementById('edit-data-registro').value = '';
+            document.getElementById('form-agendamento').reset();
+            document.getElementById('data-operacao').valueAsDate = new Date();
+            document.getElementById('btn-submit').querySelector('span').innerText = "Registrar Entrada (TESTE)";
+            document.getElementById('btn-cancelar-edicao').classList.add('hidden');
+        };
+
+        window.fecharModalExcluir = function() {
+            document.getElementById('modal-excluir').classList.remove('flex');
+            document.getElementById('modal-excluir').classList.add('hidden');
+        };
 
         const firebaseConfig = {
             apiKey: "AIzaSyAc2Ff8cm2Kz9hasPw60QrOwidE923ODWQ",
@@ -377,8 +335,7 @@
             projectId: "portaria-valorempatos",
             storageBucket: "portaria-valorempatos.firebasestorage.app",
             messagingSenderId: "1049653344467",
-            appId: "1:1049653344467:web:35f2be3885f18463953c26",
-            measurementId: "G-PM9Q0CH3BP"
+            appId: "1:1049653344467:web:35f2be3885f18463953c26"
         };
 
         let db = null;
@@ -386,7 +343,6 @@
         let mostrarAntigos = false;
         let isAdmin = false;
         const SENHA_MESTRE = "valorem2026";
-        
         let ultimaVerificacaoChamada = Date.now();
         let temporizadorReenvio = null;
         const COLECAO_DB = "agendamentos_teste";
@@ -400,18 +356,197 @@
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
-
                 for (let i = 0; i < 10; i++) {
                     let osc = ctx.createOscillator();
                     let gain = ctx.createGain();
-
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(600, ctx.currentTime + (i * 0.5));
-                    
                     gain.gain.setValueAtTime(0.5, ctx.currentTime + (i * 0.5));
                     gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (i * 0.5) + 0.4);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + (i * 0.5)); osc.stop(ctx.currentTime + (i * 0.5) + 0.4);
+                }
+            } catch (e) { console.log(e); }
+        }
 
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+        function atualizarVisualAdmin() {
+            const btnStatus = document.getElementById('btn-admin-status');
+            if (isAdmin) {
+                btnStatus.innerText = "🔓 Admin Ativo";
+                btnStatus.className = "bg-green-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold";
+            } else {
+                btnStatus.innerText = "🔒 Modo Admin";
+                btnStatus.className = "bg-slate-100 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-300";
+            }
+            renderizarTabela();
+        }
 
-                    osc.start(ctx.currentTime + (i * 0
+        function mostrarToast(mensagem, erro = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = mensagem;
+            toast.className = `fixed bottom-5 right-5 transform translate-y-0 opacity-100 transition-all duration-300 text-white px-5 py-3 rounded-xl shadow-2xl z-50 text-sm flex items-center ${erro ? 'bg-red-600' : 'bg-valorem-dark'}`;
+            setTimeout(() => { toast.classList.replace('translate-y-0', 'translate-y-20'); toast.classList.replace('opacity-100', 'opacity-0'); }, 3500);
+        }
+
+        window.salvarAgendamento = async function(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-id').value;
+            const dataOpRaw = document.getElementById('data-operacao').value;
+            const partes = dataOpRaw.split('-');
+            const dataOperacaoFmt = `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+            const dadosRegistro = {
+                timestamp: Date.now(),
+                dataRegistro: new Date().toLocaleString('pt-BR'),
+                dataOperacaoISO: dataOpRaw,
+                dataOperacao: dataOperacaoFmt,
+                operacao: document.getElementById('operacao').value,
+                motorista: document.getElementById('motorista').value.toUpperCase(),
+                transportadora: document.getElementById('transportadora').value.toUpperCase(),
+                placaCavalo: document.getElementById('placa-cavalo').value.toUpperCase(),
+                placaCarreta: document.getElementById('placa-carreta').value.toUpperCase() || '-',
+                telefone: document.getElementById('telefone').value || '-',
+                concluido: false,
+                statusAlerta: "Aguardando Chamada"
+            };
+
+            if (db) {
+                if (editId) {
+                    await db.collection(COLECAO_DB).doc(editId).update(dadosRegistro);
+                    mostrarToast('Atualizado!');
+                    cancelarEdicao();
+                } else {
+                    await db.collection(COLECAO_DB).add(dadosRegistro);
+                    mostrarToast('Registrado!');
+                    document.getElementById('form-agendamento').reset();
+                    document.getElementById('data-operacao').valueAsDate = new Date();
+                }
+                switchTab('consultas');
+            }
+        };
+
+        window.excluirRegistro = function(id) {
+            if (!isAdmin) return;
+            document.getElementById('excluir-id-target').value = id;
+            document.getElementById('modal-excluir').classList.replace('hidden', 'flex');
+        };
+
+        window.confirmarExclusao = async function() {
+            const id = document.getElementById('excluir-id-target').value;
+            fecharModalExcluir();
+            await db.collection(COLECAO_DB).doc(id).delete();
+            mostrarToast("Excluído!");
+        };
+
+        window.chamarMotorista = async function(id) {
+            if (!isAdmin) return;
+            await db.collection(COLECAO_DB).doc(id).update({
+                ultimaChamada: Date.now(),
+                statusAlerta: "Chamada Enviada (Aguardando)"
+            });
+            mostrarToast("Alerta disparado!");
+        };
+
+        window.confirmarCientePortaria = async function() {
+            const id = document.getElementById('chamada-id-atual').value;
+            document.getElementById('modal-chamada').classList.replace('flex', 'hidden');
+            if (temporizadorReenvio) clearTimeout(temporizadorReenvio);
+            if (db && id) {
+                await db.collection(COLECAO_DB).doc(id).update({ statusAlerta: "CONFIRMADO (Ciente)" });
+                mostrarToast("Confirmação enviada!");
+            }
+        };
+
+        function dispararAlertaPortaria(dados) {
+            document.getElementById('chamada-id-atual').value = dados.id;
+            document.getElementById('chamada-motorista-nome').innerText = dados.motorista;
+            document.getElementById('chamada-motorista-placa').innerText = dados.placaCavalo;
+            document.getElementById('modal-chamada').classList.replace('hidden', 'flex');
+            tocarAlarmeLongo();
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("Motorista Solicitado", { body: `${dados.motorista} - Placa: ${dados.placaCavalo}`, icon: "valorem-simbolo-verde-transparente.png", requireInteraction: true });
+            }
+            if (temporizadorReenvio) clearTimeout(temporizadorReenvio);
+            temporizadorReenvio = setTimeout(() => {
+                if (!document.getElementById('modal-chamada').classList.contains('hidden')) {
+                    tocarAlarmeLongo();
+                    mostrarToast("⚠️ ALERTA pendente!", true);
+                }
+            }, 60000);
+        }
+
+        function ouvirRegistrosEmTempoReal() {
+            db.collection(COLECAO_DB).orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+                registrosCache = [];
+                snapshot.forEach(doc => registrosCache.push({ id: doc.id, ...doc.data() }));
+                
+                snapshot.docChanges().forEach(change => {
+                    const data = { id: change.doc.id, ...change.doc.data() };
+                    if (change.type === "added" || change.type === "modified") {
+                        if (data.ultimaChamada && data.ultimaChamada > ultimaVerificacaoChamada) {
+                            if (!isAdmin) dispararAlertaPortaria(data);
+                            ultimaVerificacaoChamada = data.ultimaChamada;
+                        }
+                        if (document.getElementById('chamada-id-atual').value === data.id && data.statusAlerta === "CONFIRMADO (Ciente)") {
+                            document.getElementById('modal-chamada').classList.replace('flex', 'hidden');
+                            if (temporizadorReenvio) clearTimeout(temporizadorReenvio);
+                        }
+                    }
+                });
+                renderizarTabela();
+            });
+        }
+
+        function renderizarTabela() {
+            const tbody = document.getElementById('tabela-registros');
+            const hojeISO = new Date().toISOString().split('T')[0];
+            document.getElementById('th-acoes').classList.toggle('hidden', !isAdmin);
+
+            const filtrados = registrosCache.filter(r => mostrarAntigos || r.dataOperacaoISO >= hojeISO);
+            if (filtrados.length === 0) return tbody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-slate-400">Nenhum registro.</td></tr>`;
+
+            tbody.innerHTML = filtrados.map(r => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="py-3 px-3 text-xs text-slate-500">${r.dataRegistro.split(',')[0]}</td>
+                    <td class="py-3 px-3 font-medium">${r.dataOperacao}</td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 bg-green-50 text-valorem rounded-full text-[11px]">${r.operacao}</span></td>
+                    <td class="py-3 px-3 font-semibold">${r.motorista}</td>
+                    <td class="py-3 px-3 text-xs text-slate-600">${r.transportadora}</td>
+                    <td class="py-3 px-3 font-mono font-medium">${r.placaCavalo}</td>
+                    <td class="py-3 px-3 text-center text-[10px] font-bold text-amber-700">${r.statusAlerta}</td>
+                    ${isAdmin ? `
+                        <td class="py-3 px-3 text-center space-x-1">
+                            <button onclick="chamarMotorista('${r.id}')" class="bg-amber-100 text-amber-700 p-1.5 rounded-lg">🚚</button>
+                            <button onclick="excluirRegistro('${r.id}')" class="bg-red-50 text-red-600 p-1.5 rounded-lg">🗑️</button>
+                        </td>` : ''}
+                </tr>
+            `).join('');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('data-operacao').valueAsDate = new Date();
+            const adminSalvo = localStorage.getItem('valorem_admin_sessao_teste');
+            const dataSalva = localStorage.getItem('valorem_admin_data_teste');
+            if (adminSalvo === 'true' && dataSalva === new Date().toISOString().split('T')[0]) isAdmin = true;
+            atualizarVisualAdmin();
+            
+            try {
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                ouvirRegistrosEmTempoReal();
+            } catch (err) { console.error(err); }
+        });
+    </script>
+
+    <!-- PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW OK:', reg.scope))
+                    .catch(err => console.log('SW Falha:', err));
+            });
+        }
+    </script>
+</body>
+</html>
