@@ -79,7 +79,6 @@
                 <input type="hidden" id="edit-data-registro" value="">
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Operação -->
                     <div>
                         <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Operação *</label>
                         <select id="operacao" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none bg-white text-slate-700 text-sm transition">
@@ -89,15 +88,12 @@
                             <option value="Outros">Outros</option>
                         </select>
                     </div>
-
-                    <!-- Data da Operação -->
                     <div>
                         <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Data da Operação *</label>
                         <input type="date" id="data-operacao" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none bg-white text-slate-700 text-sm transition">
                     </div>
                 </div>
 
-                <!-- Nome do Motorista -->
                 <div>
                     <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Nome do Motorista *</label>
                     <input type="text" id="motorista" list="lista-motoristas" required placeholder="Digite ou selecione o nome" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 text-sm transition">
@@ -109,7 +105,6 @@
                     </datalist>
                 </div>
 
-                <!-- Transportadora -->
                 <div>
                     <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Transportadora *</label>
                     <input type="text" id="transportadora" list="lista-transportadoras" required placeholder="Digite ou selecione a transportadora" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none text-slate-700 text-sm transition">
@@ -118,7 +113,6 @@
                     </datalist>
                 </div>
 
-                <!-- Placas e Telefone -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Placa Cavalo *</label>
@@ -134,7 +128,6 @@
                     </div>
                 </div>
 
-                <!-- Botão Salvar -->
                 <div class="pt-2">
                     <button type="submit" id="btn-submit" class="w-full bg-valorem hover:bg-valorem-dark text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2 text-sm">
                         <span>Registrar Entrada (TESTE)</span>
@@ -145,7 +138,6 @@
 
         <!-- Seção 2: Tabela de Consultas -->
         <section id="section-consultas" class="hidden space-y-3">
-            
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 px-1">
                 <h3 class="text-base sm:text-lg font-bold text-slate-700">Painel de Agendamentos Ativos (TESTE)</h3>
                 <button onclick="alternarDiasAnteriores()" id="btn-dias-anteriores" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-1.5">
@@ -166,20 +158,20 @@
                                 <th class="py-3 px-3">Placa Cavalo</th>
                                 <th class="py-3 px-3">Placa Carreta</th>
                                 <th class="py-3 px-3">Telefone</th>
+                                <th class="py-3 px-3 text-center">Status Alerta</th>
                                 <th id="th-acoes" class="py-3 px-3 text-center hidden">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-registros" class="divide-y divide-slate-100 text-slate-700">
-                            <tr><td colspan="9" class="text-center p-6 text-slate-400 font-medium text-sm">Carregando registros de teste...</td></tr>
+                            <tr><td colspan="10" class="text-center p-6 text-slate-400 font-medium text-sm">Carregando registros de teste...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
-
     </main>
 
-    <!-- Modal de Chamada de Motorista -->
+    <!-- Modal de Chamada de Motorista (Para a Portaria) -->
     <div id="modal-chamada" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden items-center justify-center z-[100] p-4">
         <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-lg w-full text-center space-y-6 border-4 border-valorem-light animate-[pulse_2s_infinite]">
             <div class="text-6xl animate-bounce">🚚</div>
@@ -187,7 +179,7 @@
             <p class="text-sm font-semibold text-valorem uppercase">MOTORISTA SOLICITADO PARA PESAGEM</p>
             
             <div class="space-y-2 bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-inner">
-                <p class="text-2xl font-bold text-valorem-dark" id="chamada-motorista-nome">NOME DO MOTORISTA</p>
+                <p class="text-2xl font-bold text-valorem-dark" id="chamada-motorista-nome">NOME</p>
                 <p class="text-base text-slate-600 font-medium" id="chamada-motorista-transp">TRANSPORTADORA</p>
                 <div class="inline-block bg-slate-200 px-4 py-1.5 rounded-lg mt-2">
                     <p class="text-xl font-mono font-bold text-slate-800 tracking-widest" id="chamada-motorista-placa">PLACA</p>
@@ -195,13 +187,14 @@
             </div>
             
             <p class="text-sm text-slate-500 font-medium">Favor chamar motorista para carregamento</p>
-            <button onclick="fecharModalChamada()" class="w-full bg-valorem hover:bg-valorem-dark text-white font-bold py-4 rounded-xl text-lg shadow-xl transition transform active:scale-95">
+            <input type="hidden" id="chamada-id-atual" value="">
+            <button onclick="confirmarCientePortaria()" class="w-full bg-valorem hover:bg-valorem-dark text-white font-bold py-4 rounded-xl text-lg shadow-xl transition transform active:scale-95">
                 OK, CIENTE
             </button>
         </div>
     </div>
 
-    <!-- Modal de Senha Admin -->
+    <!-- Modais Admin -->
     <div id="modal-admin" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200">
             <h3 class="text-lg font-bold text-slate-800">Modo Admin</h3>
@@ -214,7 +207,6 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Saída Admin -->
     <div id="modal-sair-admin" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200 text-center">
             <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">⚠️</div>
@@ -227,12 +219,11 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
     <div id="modal-excluir" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-4 border border-slate-200 text-center">
             <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">🗑️</div>
             <h3 class="text-lg font-bold text-slate-800">Excluir Agendamento</h3>
-            <p class="text-xs text-slate-500">Tem certeza que deseja excluir este agendamento de teste do banco de dados?</p>
+            <p class="text-xs text-slate-500">Tem certeza que deseja excluir este agendamento de teste?</p>
             <input type="hidden" id="excluir-id-target" value="">
             <div class="flex space-x-3 pt-2">
                 <button onclick="fecharModalExcluir()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">Cancelar</button>
@@ -241,17 +232,15 @@
         </div>
     </div>
 
-    <!-- Rodapé -->
     <footer class="text-center py-3 text-xs text-slate-400">
         Valorem Agronegócios &copy; 2026 - Todos os direitos reservados (Ambiente de Teste).
     </footer>
 
-    <!-- Notificação Toast -->
     <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl z-50 text-sm font-medium flex items-center space-x-2">
         <span id="toast-msg">Mensagem</span>
     </div>
 
-    <!-- Script de Configuração e Lógica -->
+    <!-- Script de Lógica -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAc2Ff8cm2Kz9hasPw60QrOwidE923ODWQ",
@@ -271,14 +260,13 @@
         
         let ultimaVerificacaoChamada = Date.now();
         let audioDesbloqueado = false;
+        let temporizadorReenvio = null; // Controla os 60 segundos
         const COLECAO_DB = "agendamentos_teste";
 
-        // Solicita permissão para notificações nativas do Chrome/Windows
         if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
             Notification.requestPermission();
         }
 
-        // Destrava o som do caminhao.mp3 no primeiro clique na página
         const destravarAudio = () => {
             if (!audioDesbloqueado) {
                 const audio = document.getElementById('som-caminhao');
@@ -288,7 +276,6 @@
                     audio.currentTime = 0;
                     audio.volume = 1;
                     audioDesbloqueado = true;
-                    console.log("Áudio local destravado com sucesso!");
                 }).catch(e => console.log("Aguardando interação..."));
             }
         };
@@ -296,7 +283,6 @@
         document.addEventListener('click', destravarAudio, { once: true });
         document.addEventListener('touchstart', destravarAudio, { once: true });
 
-        // Bipe curto de segurança para garantir o alerta imediato
         function tocarBipeCurto() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -490,7 +476,8 @@
                 placaCavalo: document.getElementById('placa-cavalo').value.toUpperCase(),
                 placaCarreta: document.getElementById('placa-carreta').value.toUpperCase() || '-',
                 telefone: document.getElementById('telefone').value || '-',
-                concluido: regExistente ? (regExistente.concluido || false) : false
+                concluido: regExistente ? (regExistente.concluido || false) : false,
+                statusAlerta: "Aguardando Chamada"
             };
 
             if (db) {
@@ -572,7 +559,8 @@
             if (!isAdmin) return;
             try {
                 await db.collection(COLECAO_DB).doc(id).update({
-                    concluido: true
+                    concluido: true,
+                    statusAlerta: "Concluído"
                 });
                 mostrarToast("Agendamento de teste concluído!");
             } catch (err) {
@@ -581,20 +569,54 @@
             }
         }
 
+        // Admin clica para chamar o motorista
         async function chamarMotorista(id) {
             if (!isAdmin) return;
             try {
                 await db.collection(COLECAO_DB).doc(id).update({
-                    ultimaChamada: Date.now()
+                    ultimaChamada: Date.now(),
+                    statusAlerta: "Chamada Enviada (Aguardando Ciente)"
                 });
-                mostrarToast("Alerta disparado para o motorista no Teste!");
+                mostrarToast("Alerta disparado para a portaria!");
             } catch (err) {
                 console.error("Erro ao chamar motorista:", err);
                 mostrarToast("Erro ao acionar motorista.", true);
             }
         }
 
-        function dispararAlertaMotorista(dados) {
+        // Portaria clica em "OK, Ciente"
+        async function confirmarCientePortaria() {
+            const id = document.getElementById('chamada-id-atual').value;
+            
+            // Para o cronômetro de 60 segundos local se estiver rodando
+            if (temporizadorReenvio) {
+                clearTimeout(temporizadorReenvio);
+                temporizadorReenvio = null;
+            }
+
+            document.getElementById('modal-chamada').classList.remove('flex');
+            document.getElementById('modal-chamada').classList.add('hidden');
+            
+            const audio = document.getElementById('som-caminhao');
+            audio.loop = false;
+            audio.pause();
+            audio.currentTime = 0;
+
+            if (db && id) {
+                try {
+                    await db.collection(COLECAO_DB).doc(id).update({
+                        statusAlerta: "CONFIRMADO (Ciente)"
+                    });
+                    mostrarToast("Confirmação enviada ao Admin!");
+                } catch (err) {
+                    console.error("Erro ao confirmar ciente:", err);
+                }
+            }
+        }
+
+        // Executado na tela da Portaria quando o Admin chama
+        function dispararAlertaPortaria(dados) {
+            document.getElementById('chamada-id-atual').value = dados.id;
             document.getElementById('chamada-motorista-nome').innerText = dados.motorista;
             document.getElementById('chamada-motorista-transp').innerText = dados.transportadora;
             document.getElementById('chamada-motorista-placa').innerText = dados.placaCavalo;
@@ -603,10 +625,8 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
 
-            // 1. Toca o bipe de segurança imediato
             tocarBipeCurto();
 
-            // 2. Toca o caminhao.mp3 local em loop por 4 segundos
             setTimeout(() => {
                 const audio = document.getElementById('som-caminhao');
                 if (audioDesbloqueado) {
@@ -620,28 +640,34 @@
                                 audio.pause();
                                 audio.currentTime = 0;
                             }, 4000);
-                        }).catch(e => console.log("Áudio local indisponível."));
+                        }).catch(e => console.log("Áudio bloqueado."));
                     }
                 }
             }, 500);
 
-            // 3. Dispara a Notificação nativa do Windows no canto da tela (mesmo com o navegador minimizado)
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Motorista Solicitado para Pesagem", {
                     body: `Favor chamar motorista para carregamento.\n${dados.motorista} - Placa: ${dados.placaCavalo}`,
                     icon: "valorem-simbolo-verde-transparente.png"
                 });
             }
-        }
 
-        function fecharModalChamada() {
-            document.getElementById('modal-chamada').classList.remove('flex');
-            document.getElementById('modal-chamada').classList.add('hidden');
+            // RECURSO DE 60 SEGUNDOS: Se em 1 minuto a portaria não clicar em OK, dispara o alerta novamente de forma automática
+            if (temporizadorReenvio) clearTimeout(temporizadorReenvio);
             
-            const audio = document.getElementById('som-caminhao');
-            audio.loop = false;
-            audio.pause();
-            audio.currentTime = 0;
+            temporizadorReenvio = setTimeout(() => {
+                const modalVisivel = !document.getElementById('modal-chamada').classList.contains('hidden');
+                if (modalVisivel) {
+                    // Toca o alarme novamente por insistência
+                    tocarBipeCurto();
+                    const audio = document.getElementById('som-caminhao');
+                    if (audioDesbloqueado) {
+                        audio.currentTime = 0;
+                        audio.play().catch(e => {});
+                    }
+                    mostrarToast("⚠️ ALERTA: Confirmação pendente há 60 segundos!", true);
+                }
+            }, 60000); // 60 segundos
         }
 
         function ouvirRegistrosEmTempoReal() {
@@ -654,10 +680,12 @@
 
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added" || change.type === "modified") {
-                        const data = change.doc.data();
+                        const data = { id: change.doc.id, ...change.doc.data() };
+                        
+                        // Se houver nova chamada e NÃO estivermos no modo Admin, abre o modal na portaria
                         if (data.ultimaChamada && data.ultimaChamada > ultimaVerificacaoChamada) {
                             if (!isAdmin) {
-                                dispararAlertaMotorista(data);
+                                dispararAlertaPortaria(data);
                             }
                             ultimaVerificacaoChamada = data.ultimaChamada;
                         }
@@ -701,37 +729,49 @@
             });
 
             if (filtrados.length === 0) {
-                const colSpan = isAdmin ? 9 : 8;
+                const colSpan = isAdmin ? 10 : 9;
                 tbody.innerHTML = `<tr><td colspan="${colSpan}" class="text-center p-6 text-slate-400 font-medium text-sm">Nenhum registro de teste encontrado.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = filtrados.map(r => `
-                <tr class="transition ${r.concluido ? 'bg-emerald-50/30 hover:bg-emerald-50/50' : 'hover:bg-slate-50/80'}">
-                    <td class="py-3 px-3 font-mono text-[11px] sm:text-xs text-slate-500 whitespace-nowrap">${r.dataRegistro}</td>
-                    <td class="py-3 px-3 font-medium text-valorem-dark whitespace-nowrap">${r.dataOperacao}</td>
-                    <td class="py-3 px-3 whitespace-nowrap">
-                        <div class="inline-flex items-center space-x-1.5">
-                            ${r.concluido ? '<span class="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-700 rounded-full text-xs font-bold shadow-sm" title="Concluído">✓</span>' : ''}
-                            <span class="px-2 py-0.5 bg-green-50 text-valorem rounded-full text-[11px] font-semibold">${r.operacao}</span>
-                        </div>
-                    </td>
-                    <td class="py-3 px-3 font-semibold text-slate-800">${r.motorista}</td>
-                    <td class="py-3 px-3 text-slate-600">${r.transportadora}</td>
-                    <td class="py-3 px-3 font-mono font-medium whitespace-nowrap">${r.placaCavalo}</td>
-                    <td class="py-3 px-3 font-mono text-slate-500 whitespace-nowrap">${r.placaCarreta}</td>
-                    <td class="py-3 px-3 font-mono text-slate-600 whitespace-nowrap">${r.telefone}</td>
-                    ${isAdmin ? `
-                        <td class="py-3 px-3 text-center space-x-1 whitespace-nowrap">
-                            ${!r.concluido ? `
-                                <button onclick="chamarMotorista('${r.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Chamar Motorista">🚚</button>
-                                <button onclick="concluirRegistro('${r.id}')" class="bg-green-100 hover:bg-green-200 text-green-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Concluído">✓</button>
+            tbody.innerHTML = filtrados.map(r => {
+                let badgeStatus = '<span class="text-slate-400 text-xs">-</span>';
+                if (r.statusAlerta === "Chamada Enviada (Aguardando Ciente)") {
+                    badgeStatus = '<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">⏳ Aguardando Ciente</span>';
+                } else if (r.statusAlerta === "CONFIRMADO (Ciente)") {
+                    badgeStatus = '<span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full">✓ Confirmado</span>';
+                } else if (r.statusAlerta === "Concluído") {
+                    badgeStatus = '<span class="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Concluído</span>';
+                }
+
+                return `
+                    <tr class="transition ${r.concluido ? 'bg-emerald-50/30 hover:bg-emerald-50/50' : 'hover:bg-slate-50/80'}">
+                        <td class="py-3 px-3 font-mono text-[11px] sm:text-xs text-slate-500 whitespace-nowrap">${r.dataRegistro}</td>
+                        <td class="py-3 px-3 font-medium text-valorem-dark whitespace-nowrap">${r.dataOperacao}</td>
+                        <td class="py-3 px-3 whitespace-nowrap">
+                            <div class="inline-flex items-center space-x-1.5">
+                                ${r.concluido ? '<span class="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-700 rounded-full text-xs font-bold shadow-sm" title="Concluído">✓</span>' : ''}
+                                <span class="px-2 py-0.5 bg-green-50 text-valorem rounded-full text-[11px] font-semibold">${r.operacao}</span>
+                            </div>
+                        </td>
+                        <td class="py-3 px-3 font-semibold text-slate-800">${r.motorista}</td>
+                        <td class="py-3 px-3 text-slate-600">${r.transportadora}</td>
+                        <td class="py-3 px-3 font-mono font-medium whitespace-nowrap">${r.placaCavalo}</td>
+                        <td class="py-3 px-3 font-mono text-slate-500 whitespace-nowrap">${r.placaCarreta}</td>
+                        <td class="py-3 px-3 font-mono text-slate-600 whitespace-nowrap">${r.telefone}</td>
+                        <td class="py-3 px-3 text-center whitespace-nowrap">${badgeStatus}</td>
+                        ${isAdmin ? `
+                            <td class="py-3 px-3 text-center space-x-1 whitespace-nowrap">
+                                ${!r.concluido ? `
+                                    <button onclick="chamarMotorista('${r.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Chamar Motorista">🚚</button>
+                                    <button onclick="concluirRegistro('${r.id}')" class="bg-green-100 hover:bg-green-200 text-green-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Concluído">✓</button>
+                                ` : ''}
+                                <button onclick="prepararEdicao('${r.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Editar">✏️</button>
+                                <button onclick="excluirRegistro('${r.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Excluir">🗑️</button>
                             ` : ''}
-                            <button onclick="prepararEdicao('${r.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Editar">✏️</button>
-                            <button onclick="excluirRegistro('${r.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 p-1.5 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center" title="Excluir">🗑️</button>
-                        </td>` : ''}
-                </tr>
-            `).join('');
+                    </tr>
+                `;
+            }).join('');
         }
     </script>
 </body>
