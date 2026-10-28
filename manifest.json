@@ -1,7 +1,7 @@
 {
   "name": "Portaria Valorem (Teste)",
   "short_name": "Valorem Teste",
-  "start_url": "./app.html",
+  "start_url": "./teste.html",
   "display": "standalone",
   "background_color": "#f1f5f9",
   "theme_color": "#00732E",
