@@ -740,13 +740,35 @@
                 return r.dataOperacaoISO >= hojeISO;
             });
 
+            // Ordenação: 1º Data de Operação (crescente), 2º Timestamp do Registro (crescente)
+            filtrados.sort((a, b) => {
+                if (a.dataOperacaoISO !== b.dataOperacaoISO) {
+                    return a.dataOperacaoISO.localeCompare(b.dataOperacaoISO);
+                }
+                return (a.timestamp || 0) - (b.timestamp || 0);
+            });
+
             if (filtrados.length === 0) {
                 const colSpan = isAdmin ? 10 : 9;
                 tbody.innerHTML = `<tr><td colspan="${colSpan}" class="text-center p-6 text-slate-400 font-medium text-sm">Nenhum registro encontrado para exibição.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = filtrados.map(r => {
+            let htmlTabela = '';
+            let dataAtualGrupamento = null;
+            const colSpan = isAdmin ? 10 : 9;
+
+            filtrados.forEach((r) => {
+                // Inserir separador visual quando a data de operação mudar (e não for o primeiro item)
+                if (dataAtualGrupamento !== null && dataAtualGrupamento !== r.dataOperacaoISO) {
+                    htmlTabela += `
+                        <tr>
+                            <td colspan="${colSpan}" class="bg-slate-100 h-3 border-y border-slate-200"></td>
+                        </tr>
+                    `;
+                }
+                dataAtualGrupamento = r.dataOperacaoISO;
+
                 let badgeStatus = '<span class="text-slate-400 text-xs">-</span>';
                 if (r.statusAlerta === "Chamada Enviada (Aguardando Ciente)") {
                     badgeStatus = '<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">⏳ Aguardando Ciente</span>';
@@ -756,8 +778,8 @@
                     badgeStatus = '<span class="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Concluído</span>';
                 }
 
-                return `
-                    <tr class="transition ${r.concluido ? 'bg-emerald-50/30 hover:bg-emerald-50/50' : 'hover:bg-slate-50/80'}">
+                htmlTabela += `
+                    <tr class="transition ${r.concluido ? 'bg-emerald-50/30 hover:bg-emerald-50/50' : 'hover:bg-slate-50/80'} border-b border-slate-100 last:border-0">
                         <td class="py-3 px-3 font-mono text-[11px] sm:text-xs text-slate-500 whitespace-nowrap">${r.dataRegistro}</td>
                         <td class="py-3 px-3 font-medium text-valorem-dark whitespace-nowrap">${r.dataOperacao}</td>
                         <td class="py-3 px-3 whitespace-nowrap">
@@ -783,7 +805,9 @@
                             </td>` : ''}
                     </tr>
                 `;
-            }).join('');
+            });
+
+            tbody.innerHTML = htmlTabela;
         }
 
         // Inicialização Geral
