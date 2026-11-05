@@ -102,7 +102,6 @@
                     <!-- Data da Operação -->
                     <div>
                         <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">Data do Carregamento*</label>
-                        <!-- AQUI ESTÁ O NOVO ID: data-carregamento -->
                         <input type="date" id="data-carregamento" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-valorem focus:border-valorem outline-none bg-white text-slate-700 text-sm transition">
                     </div>
                 </div>
@@ -206,11 +205,12 @@
                                 <th class="py-3 px-3">Placa Carreta</th>
                                 <th class="py-3 px-3">Telefone</th>
                                 <th class="py-3 px-3 text-center">Status Alerta</th>
+                                <th id="th-chamada" class="py-3 px-3 text-center hidden">Chamada</th>
                                 <th id="th-acoes" class="py-3 px-3 text-center hidden">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-registros" class="divide-y divide-slate-100 text-slate-700">
-                            <tr><td colspan="10" class="text-center p-6 text-slate-400 font-medium text-sm">Carregando registros...</td></tr>
+                            <tr><td colspan="11" class="text-center p-6 text-slate-400 font-medium text-sm">Carregando registros...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -485,15 +485,12 @@
             const agora = new Date();
             const dataRegistro = dataRegistroOriginal || (agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}));
             
-            // CORRIGIDO AQUI: data-carregamento
             const dataOpRaw = document.getElementById('data-carregamento').value;
             const partesData = dataOpRaw.split('-');
             const dataOperacaoFmt = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
 
             const regExistente = editId ? registrosCache.find(r => r.id === editId) : null;
 
-            // Mantivemos os nomes "dataOperacaoISO" e "dataOperacao" para enviar ao banco de dados
-            // assim os registros antigos não se perdem.
             const dadosRegistro = {
                 timestamp: regExistente?.timestamp || Date.now(),
                 dataRegistro: dataRegistro,
@@ -506,7 +503,9 @@
                 placaCarreta: document.getElementById('placa-carreta').value.toUpperCase() || '-',
                 telefone: document.getElementById('telefone').value || '-',
                 concluido: regExistente ? (regExistente.concluido || false) : false,
-                statusAlerta: regExistente ? (regExistente.statusAlerta || "Aguardando Chamada") : "Aguardando Chamada"
+                statusAlerta: regExistente ? (regExistente.statusAlerta || "Aguardando Chamada") : "Aguardando Chamada",
+                // Preservar a hora da chamada caso já exista na edição
+                ultimaChamada: regExistente ? regExistente.ultimaChamada : null 
             };
 
             if (db) {
@@ -519,7 +518,6 @@
                         await db.collection("agendamentos").add(dadosRegistro);
                         mostrarToast('Agendamento registrado com sucesso!');
                         document.getElementById('form-agendamento').reset();
-                        // CORRIGIDO AQUI: data-carregamento
                         document.getElementById('data-carregamento').valueAsDate = new Date();
                     }
                     switchTab('consultas');
@@ -537,7 +535,6 @@
             document.getElementById('edit-id').value = reg.id;
             document.getElementById('edit-data-registro').value = reg.dataRegistro;
             document.getElementById('operacao').value = reg.operacao;
-            // CORRIGIDO AQUI: data-carregamento
             document.getElementById('data-carregamento').value = reg.dataOperacaoISO;
             document.getElementById('motorista').value = reg.motorista;
             document.getElementById('transportadora').value = reg.transportadora;
@@ -557,7 +554,6 @@
             document.getElementById('edit-id').value = '';
             document.getElementById('edit-data-registro').value = '';
             document.getElementById('form-agendamento').reset();
-            // CORRIGIDO AQUI: data-carregamento
             document.getElementById('data-carregamento').valueAsDate = new Date();
             document.getElementById('form-titulo').innerText = "Novo Agendamento";
             document.getElementById('form-subtitulo').innerText = "Preencha os dados de entrada na portaria.";
@@ -733,12 +729,16 @@
         function renderizarTabela() {
             const tbody = document.getElementById('tabela-registros');
             const thAcoes = document.getElementById('th-acoes');
+            const thChamada = document.getElementById('th-chamada');
             const hojeISO = new Date().toISOString().split('T')[0];
 
+            // Controle de visibilidade das colunas exclusivas do Admin
             if (isAdmin) {
                 thAcoes.classList.remove('hidden');
+                thChamada.classList.remove('hidden');
             } else {
                 thAcoes.classList.add('hidden');
+                thChamada.classList.add('hidden');
             }
 
             const filtrados = registrosCache.filter(r => {
@@ -756,17 +756,17 @@
             });
 
             if (filtrados.length === 0) {
-                const colSpan = isAdmin ? 10 : 9;
+                const colSpan = isAdmin ? 11 : 9; // Se Admin exibe 11 colunas, senão 9.
                 tbody.innerHTML = `<tr><td colspan="${colSpan}" class="text-center p-6 text-slate-400 font-medium text-sm">Nenhum registro encontrado para exibição.</td></tr>`;
                 return;
             }
 
             let htmlTabela = '';
             let dataAtualGrupamento = null;
-            const colSpan = isAdmin ? 10 : 9;
+            const colSpan = isAdmin ? 11 : 9;
 
             filtrados.forEach((r) => {
-                // Inserir separador visual quando a data de operação mudar (e não for o primeiro item)
+                // Separador de datas
                 if (dataAtualGrupamento !== null && dataAtualGrupamento !== r.dataOperacaoISO) {
                     htmlTabela += `
                         <tr>
@@ -776,6 +776,7 @@
                 }
                 dataAtualGrupamento = r.dataOperacaoISO;
 
+                // Status Badge
                 let badgeStatus = '<span class="text-slate-400 text-xs">-</span>';
                 if (r.statusAlerta === "Chamada Enviada (Aguardando Ciente)") {
                     badgeStatus = '<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">⏳ Aguardando Ciente</span>';
@@ -783,6 +784,13 @@
                     badgeStatus = '<span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full">✓ Confirmado</span>';
                 } else if (r.statusAlerta === "Concluído") {
                     badgeStatus = '<span class="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Concluído</span>';
+                }
+
+                // Formatador da hora da chamada (Exclusivo Admin)
+                let horaChamadaFmt = '-';
+                if (r.ultimaChamada) {
+                    const dt = new Date(r.ultimaChamada);
+                    horaChamadaFmt = dt.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 }
 
                 htmlTabela += `
@@ -801,7 +809,11 @@
                         <td class="py-3 px-3 font-mono text-slate-500 whitespace-nowrap">${r.placaCarreta}</td>
                         <td class="py-3 px-3 font-mono text-slate-600 whitespace-nowrap">${r.telefone}</td>
                         <td class="py-3 px-3 text-center whitespace-nowrap">${badgeStatus}</td>
+                        
                         ${isAdmin ? `
+                            <td class="py-3 px-3 text-center font-mono text-[11px] text-slate-600 font-semibold whitespace-nowrap">
+                                ${horaChamadaFmt !== '-' ? `⏱️ ${horaChamadaFmt}` : '-'}
+                            </td>
                             <td class="py-3 px-3 text-center space-x-1 whitespace-nowrap">
                                 ${!r.concluido ? `
                                     <button onclick="chamarMotorista('${r.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-700 p-1.5 rounded-lg text-xs font-bold transition inline-flex items-center justify-center" title="Chamar Motorista">🚚</button>
@@ -818,7 +830,6 @@
         }
 
         // Inicialização Geral
-        // CORRIGIDO AQUI: data-carregamento
         document.getElementById('data-carregamento').valueAsDate = new Date();
         checarSessaoAdmin();
 
