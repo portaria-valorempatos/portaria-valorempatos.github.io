@@ -205,7 +205,7 @@
                                 <th class="py-3 px-3">Placa Carreta</th>
                                 <th class="py-3 px-3">Telefone</th>
                                 <th class="py-3 px-3 text-center">Status Alerta</th>
-                                <th id="th-chamada" class="py-3 px-3 text-center hidden">Chamada</th>
+                                <th id="th-chamada" class="py-3 px-3 text-center hidden">Data e Hora solicitado</th>
                                 <th id="th-acoes" class="py-3 px-3 text-center hidden">Ações</th>
                             </tr>
                         </thead>
@@ -786,11 +786,13 @@
                     badgeStatus = '<span class="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Concluído</span>';
                 }
 
-                // Formatador da hora da chamada (Exclusivo Admin)
+                // Formatador da data e hora da chamada (Exclusivo Admin)
                 let horaChamadaFmt = '-';
                 if (r.ultimaChamada) {
                     const dt = new Date(r.ultimaChamada);
-                    horaChamadaFmt = dt.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                    const dataStr = dt.toLocaleDateString('pt-BR');
+                    const horaStr = dt.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                    horaChamadaFmt = `${dataStr} ${horaStr}`;
                 }
 
                 htmlTabela += `
